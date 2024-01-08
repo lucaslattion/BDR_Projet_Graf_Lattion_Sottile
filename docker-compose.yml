@@ -1,0 +1,37 @@
+version: '3.8'
+networks:
+  bdr-net:
+    driver: bridge
+
+volumes:
+  bdr_proj_postgresql_vol:
+    driver: local
+
+services:
+  postgresql:
+    image: 'bitnami/postgresql:16'
+    container_name: bdr-projet-postgresql
+    environment:
+      - POSTGRESQL_USERNAME=bdr
+      - POSTGRESQL_PASSWORD=bdr
+      - POSTGRESQL_DATABASE=bdr
+      - POSTGRESQL_POSTGRES_PASSWORD=root
+    ports:
+      - 5432:5432
+    volumes:
+      - 'bdr_proj_postgresql_vol:/bitnami/postgresql'
+    networks:
+      - bdr-net
+
+  pgadmin:
+    image: dpage/pgadmin4:8.1
+    container_name: bdr-projet-pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=bdr@heig-vd.ch
+      - PGADMIN_DEFAULT_PASSWORD=bdr
+    ports:
+      - '8081:80'
+    depends_on:
+      - postgresql
+    networks:
+      - bdr-net
