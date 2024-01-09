@@ -1,8 +1,14 @@
 package ch.heigvd;
 
 import ch.heigvd.auth.AuthController;
-import ch.heigvd.users.UsersController;
+import ch.heigvd.auth.DbConnection;
+import ch.heigvd.user.UsersController;
+import ch.heigvd.aliment.alimentController;
 import io.javalin.Javalin;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Main {
 
@@ -19,34 +25,53 @@ public class Main {
         String dbUsername = "bdr";
         String dbPassword = "bdr";
 
-        // Controllers
-        AuthController authController = new AuthController(jdbcUrl, dbUsername, dbPassword); // Assuming changes for database support
-        UsersController usersController = new UsersController(jdbcUrl, dbUsername, dbPassword);
+
+
+
 
         // Using try-with-resources to ensure proper closure of the app
         try (Javalin app = Javalin.create()) {
-            // Auth routes
-            app.post("/login", authController::login);
-            app.post("/logout", authController::logout);
-            app.get("/profile", authController::profile);
 
-            // Users routes
-            app.post("/users", usersController::create);
-            app.get("/users", usersController::getMany);
-            app.get("/users/{email}", usersController::getOne);
-            app.put("/users/{email}", usersController::update);
-            app.delete("/users/{email}", usersController::delete);
+            // Database connection
+            try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUsername, dbPassword)) {
+                // Code pour interagir avec la base de données
 
-            app.start(PORT);
+                // Controllers
+                AuthController authController = new AuthController(conn);
+                UsersController usersController = new UsersController(conn);
 
-            // Keep the server running
-            app.events(event -> {
-                event.serverStopping(() -> System.out.println("Server is stopping"));
-                event.serverStopped(() -> System.out.println("Server has stopped"));
-            });
+                // Auth routes
+                app.post("/login", authController::login);
+                app.post("/logout", authController::logout);
+                app.get("/profile", authController::profile);
 
-            // Hold the main thread to prevent the application from exiting
-            Thread.currentThread().join();
+                // User routes
+                app.post("/user", usersController::create);
+                app.get("/user", usersController::getMany);
+                app.get("/user/{email}", usersController::getOne);
+                app.put("/user/{email}", usersController::update);
+                app.delete("/user/{email}", usersController::delete);
+
+                // Aliment routes
+                app.get("/aliment", alimentController::getMany);
+                app.post("/aliment", alimentController::create);
+                app.put("/aliment", alimentController::update);
+                app.delete("/aliment", alimentController::delete);
+
+                app.start(PORT);
+
+                // Keep the server running
+                app.events(event -> {
+                    event.serverStopping(() -> System.out.println("Server is stopping"));
+                    event.serverStopped(() -> System.out.println("Server has stopped"));
+                });
+
+                // Hold the main thread to prevent the application from exiting
+                Thread.currentThread().join();
+            } catch (SQLException e) {
+                // Gestion des exceptions SQL
+                System.out.println("Server interrupted: " + e.getMessage());
+            }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             System.out.println("Server interrupted: " + e.getMessage());
