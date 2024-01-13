@@ -160,6 +160,10 @@ public class UsersController {
 
         String email = ctx.pathParam("email");
 
+        if(userEmail == null || email == null){
+            throw new UnauthorizedResponse();
+        }
+
         if ( (userEmail.equalsIgnoreCase("admin") || userEmail.equalsIgnoreCase(email) ) == false )  {
             throw new UnauthorizedResponse();
         }

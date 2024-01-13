@@ -74,17 +74,9 @@ public class AuthController {
             throw new UnauthorizedResponse();
         }
 
-        String email = ctx.pathParam("email");
-
         if(userEmail.equalsIgnoreCase("admin")) {
             return true;
         }
-
-        if (userEmail.equalsIgnoreCase(email) == false)  {
-            throw new UnauthorizedResponse();
-        }
-
-
 
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM utilisateur WHERE email = ?");
         stmt.setString(1, userEmail);

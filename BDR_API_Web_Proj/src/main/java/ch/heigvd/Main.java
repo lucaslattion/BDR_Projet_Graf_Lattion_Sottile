@@ -1,9 +1,8 @@
 package ch.heigvd;
 
 import ch.heigvd.auth.AuthController;
-import ch.heigvd.auth.DbConnection;
 import ch.heigvd.user.UsersController;
-import ch.heigvd.aliment.alimentController;
+import ch.heigvd.aliment.AlimentController;
 import io.javalin.Javalin;
 
 import java.sql.Connection;
@@ -39,6 +38,7 @@ public class Main {
                 // Controllers
                 AuthController authController = new AuthController(conn);
                 UsersController usersController = new UsersController(conn);
+                AlimentController alimentController = new AlimentController(conn, authController);
 
                 // Auth routes
                 app.post("/login", authController::login);
@@ -56,7 +56,7 @@ public class Main {
                 app.get("/aliment", alimentController::getMany);
                 app.post("/aliment", alimentController::create);
                 app.put("/aliment", alimentController::update);
-                app.delete("/aliment", alimentController::delete);
+                app.delete("/aliment/{anom}", alimentController::delete);
 
                 app.start(PORT);
 
