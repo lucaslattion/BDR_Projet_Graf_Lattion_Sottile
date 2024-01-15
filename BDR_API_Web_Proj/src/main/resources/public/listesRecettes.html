@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website Title</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .recipes-section {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: auto; /* Added this line for scrollability */
+            max-height: 400px; /* Set a max height for the scrollable area */
+            min-height: 400px; /* Set a max height for the scrollable area */
+        }
+        
+        .filter-bar {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: auto; /* Added this line for scrollability */
+        }
+        
+        .recipe-singular {
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        .recipe-singular div {
+            flex: 1;
+        }
+        
+        h2{
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+    
+        
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .filter-element {
+            flex: 1;
+            margin-right: 10px; /* Ajoute une marge entre les éléments */
+        }
+        
+        #submitButton{
+            text-align: right;
+        }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Your Website Title</h1>
+        <div class="header-buttons">
+            <a href="./parametres.html">
+            <button>Profil</button>
+            </a>
+            <a href="./index.html">
+            <button>Déconnexion</button>
+            </a>
+        </div>
+    </header>
+
+    <h2>Recettes</h2>
+    <div class="filter-bar">
+    <div class="filter-element">  
+    <label for="choixType">Type :</label>
+    <select id="choixType" name="Types">
+        <option value="dessert">Dessert</option>
+        <option value="salade">Salade</option>
+        <option value="salade">Salade</option>
+        <option value="salade">Salade</option>
+        <option value="salade">Salade</option>
+    </select>
+        </div>
+        
+    <div class="filter-element"> 
+    <label for="Regime">Regime :</label>
+    <select id="choixRegime" name="Regimes">
+        <option value="vegan">Vegan</option>
+        <option value="keto">Keto</option>
+        <option value="salade">Salade</option>
+        <option value="salade">Salade</option>
+        <option value="salade">Salade</option>
+    </select>
+        </div>
+        
+    <div class="filter-element"> 
+    <label for="rangeInput">Calories maximum :</label>
+        <span id="selectedValue">0</span>
+    <input type="range" id="rangeInput" name="range" min="0" max="2000" value="0" step="1" oninput="updateValue()">
+    
+    
+
+    <script>
+        function updateValue() {
+            var rangeInput = document.getElementById("rangeInput");
+            var selectedValue = document.getElementById("selectedValue");
+            selectedValue.textContent = rangeInput.value;
+        }
+    </script>
+        </div>
+        
+    <div class="filter-element" id="submitButton"> 
+    <button type="submit">Valider</button>
+        </div>
+    </div>
+    
+    
+    <div class="recipes-section">
+        <div class="recipe-singular">
+            <div><a href="recette.html">Nom de la recette</a></div>
+            <div>Nombre de calories</div>
+            <div>Type</div>
+        </div>
+        <div class="recipe-singular">
+            <div>Nom de la recette</div>
+            <div>Nombre de calories</div>
+            <div>Type</div>
+        </div>
+        <div class="recipe-singular">
+            <div>Nom de la recette</div>
+            <div>Nombre de calories</div>
+            <div>Type</div>
+        </div>
+        <div class="recipe-singular">
+            <div>Nom de la recette</div>
+            <div>Nombre de calories</div>
+            <div>Type</div>
+        </div>
+        <div class="recipe-singular">
+            <div>Nom de la recette</div>
+            <div>Nombre de calories</div>
+            <div>Type</div>
+        </div>
+        <div class="recipe-singular">
+            <div>Nom de la recette</div>
+            <div>Nombre de calories</div>
+            <div>Type</div>
+        </div>
+        <div class="recipe-singular">
+            <div>Nom de la recette</div>
+            <div>Nombre de calories</div>
+            <div>Type</div>
+        </div>
+        <div class="recipe-singular">
+            <div>Nom de la recette</div>
+            <div>Nombre de calories</div>
+            <div>Type</div>
+        </div>
+
+    </div>
+
+    <script>
+        function handleButtonClick(buttonName) {
+            alert('You clicked ' + buttonName);
+            // Add your button click logic here
+        }
+    </script>
+</body>
+</html>

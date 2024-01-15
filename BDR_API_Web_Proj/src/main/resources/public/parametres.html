@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Paramètre</title>
+    <link rel="stylesheet" type="text/css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        .panel {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin: 10px;
+    width: 60%;
+            justify-content: space-between;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            align-items: center;
+}
+
+input[type="text"], input[type="number"], select {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.liste-frigo {
+    width: 100%;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.liste-entete, .liste-item {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.aliment, .quantite, .unite {
+    flex: 1;
+    text-align: left;
+    justify-content: center;
+}
+
+/* Appliquer une marge à droite sur 'aliment' et 'quantite' pour créer l'espacement */
+.aliment, .quantite {
+    margin-right: 10px;
+}
+
+.quantite {
+    text-align: center;
+}
+
+.unite {
+    text-align: right;
+}
+
+
+.quantite-unite, .ajout-container, .supprimer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.ajout-container > select, .ajout-container > input, .ajout-container > button {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.ajout-container > button {
+    max-width: 100px;
+}
+
+.supprimer-container > button {
+    width: 100%;
+}
+
+.liste-item-selected {
+    background-color: #f0f0f0;
+}
+
+.regime-content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.liste-regimes, .gestion-aliments {
+    flex: 1;
+    margin-right: 10px; /* Espacement entre les deux sections */
+}
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .recipes-section {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: auto; /* Added this line for scrollability */
+        }
+        
+        .filter-bar {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: auto; /* Added this line for scrollability */
+        }
+        
+        .recipe-singular {
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        .recipe-singular div {
+            flex: 1;
+        }
+    
+        
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .filter-element {
+            flex: 1;
+            margin-right: 10px; /* Ajoute une marge entre les éléments */
+        }
+        
+        .recipe-title {
+            display: flex;
+            justify-content: space-between;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        #submitButton{
+            text-align: right;
+        }
+        
+        .aliments-ustensils-section{
+            width: 200px;
+            background-color: skyblue;
+        }
+        
+        .recipe-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .recipe-title p, .recipe-title label, .recipe-title select {
+            margin: 0;
+        }
+        
+        
+        .container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.aliments-ustensils-section, .composants {
+    width: 48%; /* Ajustez la largeur selon vos préférences */
+}
+
+.aliments, .ustensils, .composants {
+    border: 1px solid #ccc; /* Juste pour la décoration, vous pouvez ajuster ou supprimer */
+    padding: 10px; /* Juste pour la décoration, vous pouvez ajuster ou supprimer */
+}
+
+.ingredient, .quantite, .ustensil {
+    margin: 0;
+}
+        
+        .instructions p {
+    word-wrap: break-word;
+}
+        
+    </style>
+</head>
+<body>
+    
+    <header>
+        <h1>Your Website Title</h1>
+        <div class="header-buttons">
+            <a href="./parametres.html">
+            <button>Profil</button>
+            </a>
+            <a href="./index.html">
+            <button>Déconnexion</button>
+            </a>
+        </div>
+    </header>
+    
+    <div id="container">
+        <!-- Panel Frigo -->
+
+<div id="panel-frigo" class="panel">
+    <h2>Mon frigo</h2>
+    
+        <div class="ajout-container">
+        <select id="liste-aliments">
+            <option value="Pomme">Pomme</option>
+            <option value="Lait">Lait</option>
+            <option value="Porc">Porc</option>
+        </select>
+        <input type="number" id="quantite-aliment" min="1" placeholder="Quantité">
+        <select id="unite-aliment">
+            <option value="Gramme">gramme</option>
+            <option value="Kilogramme">Kg</option>
+            <option value="Centilitre">Cl</option>
+            <option value="Litre">L</option>
+        </select>
+        <button id="btn-ajouter">Ajouter</button>
+    </div>
+
+    <div class="supprimer-container">
+        <button id="btn-supprimer">Supprimer</button>
+    </div>    
+    
+    <div class="liste-frigo">
+        <div class="liste-entete">
+            <span class="aliment">Aliment</span>
+            <span class="quantite">Quantité</span>
+            <span class="unite">Unité</span>
+        </div>
+        <div class="liste-item">
+            <span class="aliment">Pomme</span>
+            <span class="quantite">200</span>
+            <span class="unite">Gramme</span>
+        </div>
+        <div class="liste-item">
+            <span class="aliment">Lait</span>
+            <span class="quantite">2</span>
+            <span class="unite">Litre</span>
+        </div>
+        <div class="liste-item">
+            <span class="aliment">Porc</span>
+            <span class="quantite">120</span>
+            <span class="unite">Gramme</span>
+        </div>
+    </div>
+
+    
+        </div>
+
+<!-- Panel Régime -->
+    <div id="panel-regime" class="panel">
+    <!-- Liste de régimes à cocher -->
+         <div class="regime-content">
+             <div class="liste-regimes">
+                <h3>Mes régimes</h3>
+                 <div>
+                    <input type="checkbox" id="regime1" name="regime1">
+                    <label for="regime1">Végétarien</label><br>
+                    <input type="checkbox" id="regime2" name="regime2">
+                    <label for="regime2">Musulman</label><br>
+                 </div>
+        </div>
+
+        <!-- Sélection et transfert d'aliments -->
+        <div class="gestion-aliments">
+            <h3>Aliments disponibles</h3>
+            <select id="aliments-disponibles">
+                <option value="Pomme">Pomme</option>
+                <option value="Banane">Banane</option>
+                <!-- Ajoutez d'autres aliments disponibles -->
+            </select>
+            <button id="ajouter-aliment">Masquer aliment</button>
+            <h3>Aliments masquées</h3>
+            <select id="aliments-caches">
+                <!-- Les aliments cachés s'afficheront ici -->
+            </select>
+            <button id="retirer-aliment">Réafficher aliment</button>
+        </div>
+    </div>
+
+        <!-- Panel Vide 2 -->
+        <div id="panel-vide2" class="panel">
+            <h2>Panel Vide 2</h2>
+            
+        </div>
+    </div>
+        
+    </div>
+        
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let selectedElement = null;
+
+            // Gérer la sélection d'un élément de la liste
+            document.querySelectorAll('.liste-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    if (selectedElement) {
+                        selectedElement.classList.remove('liste-item-selected');
+                    }
+                    selectedElement = this;
+                    selectedElement.classList.add('liste-item-selected');
+                });
+            });
+
+            // Gérer la suppression de l'élément sélectionné
+            document.getElementById('btn-supprimer').addEventListener('click', function() {
+                if (selectedElement) {
+                    selectedElement.remove();
+                    selectedElement = null;
+                }
+            });
+
+            // Gérer l'ajout d'un nouvel élément
+            document.getElementById('btn-ajouter').addEventListener('click', function() {
+                const choixAliment = document.getElementById('liste-aliments').value; // Assurez-vous que l'ID est correct
+                const quantiteAliment = document.getElementById('quantite-aliment').value;
+                const uniteAliment = document.getElementById('unite-aliment').value;
+
+                if (quantiteAliment) {
+                    const listeFrigo = document.querySelector('.liste-frigo');
+                    const nouvelItem = document.createElement('div');
+                    nouvelItem.classList.add('liste-item');
+                    nouvelItem.innerHTML = `
+                        <span class="aliment">${choixAliment}</span>
+                        <span class="quantite">${quantiteAliment}</span>
+                        <span class="unite">${uniteAliment}</span>
+                    `;
+                    listeFrigo.appendChild(nouvelItem);
+
+                    // Vider les champs de quantité et unité
+                    document.getElementById('quantite-aliment').value = '';
+                    document.getElementById('unite-aliment').selectedIndex = 0;
+                }
+            });
+        });
+
+            // Gérer l'ajout d'aliments
+            document.getElementById('ajouter-aliment').addEventListener('click', function() {
+                var disponible = document.getElementById('aliments-disponibles');
+                var cache = document.getElementById('aliments-caches');
+                if (disponible.selectedIndex >= 0) {
+                    cache.add(disponible.options[disponible.selectedIndex]);
+                }
+            });
+
+            // Gérer le retrait d'aliments
+            document.getElementById('retirer-aliment').addEventListener('click', function() {
+                var cache = document.getElementById('aliments-caches');
+                if (cache.selectedIndex >= 0) {
+                    cache.remove(cache.selectedIndex);
+                }
+            });
+        });
+    
+    </script>
+        
+</body>
+</html>

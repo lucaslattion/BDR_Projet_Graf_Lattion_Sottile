@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website Title</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .recipes-section {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: auto; /* Added this line for scrollability */
+        }
+        
+        .filter-bar {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: auto; /* Added this line for scrollability */
+        }
+        
+        .recipe-singular {
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        .recipe-singular div {
+            flex: 1;
+        }
+    
+        
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .filter-element {
+            flex: 1;
+            margin-right: 10px; /* Ajoute une marge entre les éléments */
+        }
+        
+        .recipe-title {
+            display: flex;
+            justify-content: space-between;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            align-items: center;
+        }
+        
+        #submitButton{
+            text-align: right;
+        }
+        
+        .aliments-ustensils-section{
+            width: 200px;
+            background-color: skyblue;
+        }
+        
+
+        .recipe-title p, .recipe-title label, .recipe-title select {
+            margin: 0;
+        }
+        
+        
+        .container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.aliments-ustensils-section, .composants {
+    width: 48%; /* Ajustez la largeur selon vos préférences */
+}
+
+.aliments, .ustensils, .composants {
+    border: 1px solid #ccc; /* Juste pour la décoration, vous pouvez ajuster ou supprimer */
+    padding: 10px; /* Juste pour la décoration, vous pouvez ajuster ou supprimer */
+}
+
+.ingredient, .quantite, .ustensil {
+    margin: 0;
+}
+        
+        .instructions p {
+    word-wrap: break-word;
+}
+        
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Your Website Title</h1>
+        <div class="header-buttons">
+            <a href="./parametres.html">
+            <button>Profil</button>
+            </a>
+            <a href="./index.html">
+            <button>Déconnexion</button>
+            </a>
+        </div>
+    </header>
+
+    <div class = recipe-title>
+        <p>Nom recette</p>
+        <p>Type</p>
+    <label for="listeDesListes">Ajouter à liste :</label>
+    <select id="choixListe" name="listeDesListes">
+        <option value="favoris">Favoris</option>
+        <option value="keto">Keto</option>
+        <option value="salade">Salade</option>
+        <option value="salade">Salade</option>
+        <option value="salade">Salade</option>
+    </select>
+        <button>ajouter</button>
+    </div>
+    
+    
+
+    
+    <div class="recipes-section">
+        
+        
+    <div class="container">
+    <div class="aliments-ustensils-section">
+        <div class="aliments">
+            <h3>Aliments</h3>
+            <div>
+                <span class="ingredient">Pomme</span>
+                <span class="quantite">10g</span>
+            </div>
+            <div>
+                <span class="ingredient">Banane</span>
+                <span class="quantite">20g</span>
+            </div>
+        </div>
+        <div class="ustensils">
+            <h3>Ustensils</h3>
+            <div>
+                <span class="ustensil">Cuillère</span>
+            </div>
+            <div>
+                <span class="ustensil">Fourchette</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="composants">
+        <h3>Composants pour 100 grammes</h3>
+        <div>
+            <span class="ingredient">kcal</span>
+            <span class="quantite">10g</span>
+        </div>
+        <div>
+            <span class="ingredient">Proteines</span>
+            <span class="quantite">20g</span>
+        </div>
+        <div>
+            <span class="ingredient">Glucides</span>
+            <span class="quantite">20g</span>
+        </div>
+        <div>
+            <span class="ingredient">Lipides</span>
+            <span class="quantite">20g</span>
+        </div>
+        <div>
+            <span class="ingredient">fibres</span>
+            <span class="quantite">20g</span>
+        </div>
+        <div>
+            <span class="ingredient">Sodium</span>
+            <span class="quantite">20g</span>
+        </div>
+    </div>
+</div>
+        <div class="instructions">
+            <h3>Instructions</h3>
+            <p>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKKKKKKKKKKKKKKKKKKKKKKKAAAAAAAAAAAAAAAAAMMMMMMMMMMM</p>
+        </div>
+        
+    </div>
+    
+    
+    
+
+</body>
+</html>
