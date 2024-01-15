@@ -2,7 +2,7 @@ package ch.heigvd;
 
 import ch.heigvd.auth.AuthController;
 import ch.heigvd.user.UsersController;
-import ch.heigvd.aliment.AlimentController;
+import ch.heigvd.db.AlimentController;
 import io.javalin.Javalin;
 
 import java.sql.Connection;
@@ -11,7 +11,7 @@ import java.sql.SQLException;
 
 public class Main {
 
-    public final static int PORT = 8080;
+    public final static int PORT = 80;
 
     public static void main(String[] args) {
         // Database connection details
@@ -29,7 +29,11 @@ public class Main {
 
 
         // Using try-with-resources to ensure proper closure of the app
-        try (Javalin app = Javalin.create()) {
+        try (Javalin app = Javalin.create(config -> {
+            config.staticFiles.add("/public"); // Serve static files from 'src/main/resources/public'
+        })) {
+
+            app.get("/", ctx -> ctx.redirect("/login.html"));
 
             // Database connection
             try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUsername, dbPassword)) {
@@ -54,6 +58,7 @@ public class Main {
 
                 // Aliment routes
                 app.get("/aliment", alimentController::getMany);
+                app.post("/aliment/limit", alimentController::getMany);
                 app.post("/aliment", alimentController::create);
                 app.put("/aliment", alimentController::update);
                 app.delete("/aliment/{anom}", alimentController::delete);

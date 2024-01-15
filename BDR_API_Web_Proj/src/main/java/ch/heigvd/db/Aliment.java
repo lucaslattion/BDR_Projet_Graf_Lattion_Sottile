@@ -1,4 +1,4 @@
-package ch.heigvd.aliment;
+package ch.heigvd.db;
 
 public class Aliment {
     public String anom;

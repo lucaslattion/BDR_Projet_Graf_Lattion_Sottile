@@ -1,4 +1,4 @@
-package ch.heigvd.aliment;
+package ch.heigvd.db;
 
 import io.javalin.http.*;
 
@@ -12,16 +12,15 @@ import java.util.List;
 
 import ch.heigvd.auth.AuthController;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 
-public class AlimentController {
+public class ListeController {
 
     private Connection conn;
     private AuthController authController;
-    public AlimentController(Connection connection, AuthController authController) {
+    public ListeController(Connection connection, AuthController authController) {
         conn = connection;
         this.authController = authController;
     }
