@@ -3,6 +3,7 @@ package ch.heigvd;
 import ch.heigvd.auth.AuthController;
 import ch.heigvd.user.UsersController;
 import ch.heigvd.db.AlimentController;
+import ch.heigvd.db.Utilisateur_suit_regimeController;
 import io.javalin.Javalin;
 
 import java.sql.Connection;
@@ -43,6 +44,7 @@ public class Main {
                 AuthController authController = new AuthController(conn);
                 UsersController usersController = new UsersController(conn);
                 AlimentController alimentController = new AlimentController(conn, authController);
+                Utilisateur_suit_regimeController utilisateur_suit_regimeController = new Utilisateur_suit_regimeController(conn, authController);
 
                 // Auth routes
                 app.post("/login", authController::login);
@@ -60,8 +62,15 @@ public class Main {
                 app.get("/aliment", alimentController::getMany);
                 app.post("/aliment/limit", alimentController::getMany);
                 app.post("/aliment", alimentController::create);
-                app.put("/aliment", alimentController::update);
+                app.put("/aliment/{anom}", alimentController::update);
                 app.delete("/aliment/{anom}", alimentController::delete);
+
+                // Utilisateur_suit_regime routes
+                app.get("/utilisateur_suit_regime", utilisateur_suit_regimeController::getMany);
+                app.post("/utilisateur_suit_regime/limit", utilisateur_suit_regimeController::getMany);
+                app.post("/utilisateur_suit_regime", utilisateur_suit_regimeController::create);
+                app.put("/utilisateur_suit_regime/{email}/{regnom}", utilisateur_suit_regimeController::update);
+                app.delete("/utilisateur_suit_regime/{email}/{regnom}", utilisateur_suit_regimeController::delete);
 
                 app.start(PORT);
 

@@ -24,14 +24,15 @@ public class VitamineController {
         conn = connection;
         this.authController = authController;
     }
+
+
     public void getMany(Context ctx) throws SQLException {
 
         if(authController.validLoggedUser(ctx)){
 
             int limit = 0;   // Default 0 means all elements
             int offset = 0;  // Default 0 means no skipped elements
-            String anom = null;
-            String groupe = null;
+            String vinom = null;
 
             // Parse JSON from the request body
             if (ctx.body() != null && !ctx.body().isEmpty()) {
@@ -49,7 +50,7 @@ public class VitamineController {
                 }
             }
 
-            List<Aliment> alimentList = new ArrayList<>();
+            List<Vitamine> vitamineList = new ArrayList<>();
             StringBuilder queryBuilder = new StringBuilder("SELECT * FROM vitamine");
 
             List<String> conditions = new ArrayList<>();
@@ -73,25 +74,20 @@ public class VitamineController {
             PreparedStatement stmt = conn.prepareStatement(queryBuilder.toString());
 
             int index = 1;
-            if (anom != null) {
-                stmt.setString(index++, anom);
+            if (vinom != null) {
+                stmt.setString(index++, vinom);
             }
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Vitamine vitamine = new Vitamine();
-                aliment.anom = rs.getString("anom");
-                aliment.kcal = rs.getInt("kcal");
-                aliment.proteines = rs.getDouble("proteines");
-                aliment.glucides = rs.getDouble("glucides");
-                aliment.lipides = rs.getDouble("lipides");
-                aliment.fibres = rs.getDouble("fibres");
-                aliment.sodium = rs.getDouble("sodium");
-                aliment.groupe = rs.getString("groupe");
-                alimentList.add(aliment);
+                vitamine.vinom = rs.getString("vinom");;
+                vitamineList.add(vitamine);
+
+
             }
 
-            ctx.json(alimentList);
+            ctx.json(vitamineList);
             return;
 
         }
@@ -101,32 +97,16 @@ public class VitamineController {
     public void create(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
 
-            Aliment newAliment = ctx.bodyValidator(Aliment.class)
-                    .check(obj -> obj.anom != null, "Missing aliment name")
-                    .check(obj -> obj.kcal >= 0, "Invalid calorie count")
-                    .check(obj -> obj.proteines >= 0, "Invalid protein count")
-                    .check(obj -> obj.glucides >= 0, "Invalid carbohydrate count")
-                    .check(obj -> obj.lipides >= 0, "Invalid fat count")
-                    .check(obj -> obj.fibres >= 0, "Invalid fiber count")
-                    .check(obj -> obj.sodium >= 0, "Invalid sodium count")
-                    .check(obj -> obj.groupe != null, "Missing groupe")
+            Vitamine newVitamine = ctx.bodyValidator(Vitamine.class)
+                    .check(obj -> obj.vinom != null, "Missing vitamine name")
                     .get();
 
             try (PreparedStatement insertStmt = conn.prepareStatement(
-                    "INSERT INTO aliment (anom, kcal, proteines, glucides, lipides, fibres, sodium, groupe) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
-
-                insertStmt.setString(1, newAliment.anom);
-                insertStmt.setInt(2, newAliment.kcal);
-                insertStmt.setDouble(3, newAliment.proteines);
-                insertStmt.setDouble(4, newAliment.glucides);
-                insertStmt.setDouble(5, newAliment.lipides);
-                insertStmt.setDouble(6, newAliment.fibres);
-                insertStmt.setDouble(7, newAliment.sodium);
-                insertStmt.setString(8, newAliment.groupe);
-
+                    "INSERT INTO vitamine (vinom) VALUES (?)")) {
+                insertStmt.setString(1, newVitamine.vinom);
                 insertStmt.executeUpdate();
                 ctx.status(HttpStatus.CREATED);
-                ctx.json(newAliment);
+                ctx.json(newVitamine);
                 return;
             } catch (SQLException e) {
                 if (e.getSQLState().equals("23505")) { // Unique violation
@@ -141,27 +121,15 @@ public class VitamineController {
 
     public void update(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
-            Aliment updateAliment = ctx.bodyValidator(Aliment.class)
-                    .check(obj -> obj.anom != null, "Missing aliment name")
-                    .check(obj -> obj.kcal >= 0, "Invalid calorie count")
-                    .check(obj -> obj.proteines >= 0, "Invalid protein count")
-                    .check(obj -> obj.glucides >= 0, "Invalid carbohydrate count")
-                    .check(obj -> obj.lipides >= 0, "Invalid fat count")
-                    .check(obj -> obj.fibres >= 0, "Invalid fiber count")
-                    .check(obj -> obj.sodium >= 0, "Invalid sodium count")
-                    .check(obj -> obj.groupe != null, "Missing groupe")
+            String vinom = ctx.pathParam("vinom");
+            Vitamine updateVitamine = ctx.bodyValidator(Vitamine.class)
+                    .check(obj -> obj.vinom != null, "Missing vitamine name")
                     .get();
 
             PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE aliment SET kcal = ?, proteines = ?, glucides = ?, lipides = ?, fibres = ?, sodium = ?, groupe = ? WHERE anom = ?");
-            stmt.setInt(1, updateAliment.kcal);
-            stmt.setDouble(2, updateAliment.proteines);
-            stmt.setDouble(3, updateAliment.glucides);
-            stmt.setDouble(4, updateAliment.lipides);
-            stmt.setDouble(5, updateAliment.fibres);
-            stmt.setDouble(6, updateAliment.sodium);
-            stmt.setString(7, updateAliment.groupe);
-            stmt.setString(8, updateAliment.anom);
+                    "UPDATE vitamine SET vinom = ? WHERE vinom = ?");
+            stmt.setString(1, updateVitamine.vinom);
+            stmt.setString(2, vinom);
 
             int updatedRows = stmt.executeUpdate();
             if (updatedRows == 0) {
@@ -176,10 +144,10 @@ public class VitamineController {
 
     public void delete(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
-            String anom = ctx.pathParam("anom");
+            String vinom = ctx.pathParam("vinom");
 
-            PreparedStatement stmt = conn.prepareStatement("DELETE FROM aliment WHERE anom = ?");
-            stmt.setString(1, anom);
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM vitamine WHERE vinom = ?");
+            stmt.setString(1, vinom);
 
             int deletedRows = stmt.executeUpdate();
             if (deletedRows == 0) {
@@ -191,4 +159,5 @@ public class VitamineController {
         }
         throw new UnauthorizedResponse();
     }
+
 }
