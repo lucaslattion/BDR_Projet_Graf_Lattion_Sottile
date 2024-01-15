@@ -1,38 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login Page</title>
-    <script>
-        function submitLoginForm() {
-            var email = document.getElementById('email').value;
-            var password = document.getElementById('password').value;
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/login", true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200 || xhr.status === 204) {
-                    alert("Login Successful");
-                }
-            };
-
-            var data = JSON.stringify({"email": email, "password": password});
-            xhr.send(data);
-
-            return false; // Prevent page refresh
-        }
-    </script>
+    <title>Page de Connexion</title>
+    <link rel="stylesheet" type="text/css" href="mainStyle.css">
 </head>
 <body>
-    <form onsubmit="return submitLoginForm()">
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
-
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
-
-        <input type="submit" value="Submit">
-    </form>
+    <div class="login-panel">
+        <h2>Page de Connexion</h2>
+        <form onsubmit="return submitLoginForm()">
+            <div>
+                <input type="text" id="email" name="email" placeholder="Adresse e-mail" required>
+            </div>
+            <div>
+                <input type="text" id="password" name="password" placeholder="Mot de passe" required>
+            </div>
+            <div class="button-container">
+                <button type="submit">Connexion</button>
+            </div>
+        </form>
+        <div class="button-container">
+            <a href="register.html"><button type="submit">Créer un compte</button></a>
+        </div>
+    </div>
 </body>
+
+<script>
+    function submitLoginForm() {
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/login", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 204 || xhr.status === 200) {
+                    window.location.href = '/listesRecettes.html'; // Redirection
+                } else {
+                    alert("Nom d'utilisateur ou mot de passe incorrecte.");
+                    document.getElementById('password').value = '';
+                }
+            }
+        };
+
+        var data = JSON.stringify({"email": email, "password": password});
+        xhr.send(data);
+
+        return false; // Prevent page refresh
+    }
+</script>
+
+
 </html>
