@@ -1,10 +1,13 @@
-package ch.heigvd.users;
+package ch.heigvd.user;
 
-public class UserLogin {
+public class User {
+
+    public String firstName;
+    public String lastName;
     public String email;
     public String password;
 
-    public UserLogin() {
+    public User() {
         // Empty constructor for serialisation/deserialization
     }
 }

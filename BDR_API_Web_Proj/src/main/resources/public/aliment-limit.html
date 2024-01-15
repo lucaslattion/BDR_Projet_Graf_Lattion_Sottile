@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aliments</title>
+    <script>
+        window.onload = function() {
+            // Check if cookies are present
+            if (document.cookie) {
+                fetchAliments();
+            } else {
+                showLoginForm();
+            }
+        };
+
+        function fetchAliments() {
+            var params = {
+                limit: "0",
+                offset: "0",
+                groupe: "Fruits Tropicaux",
+                anom: "TestAliment"
+            };
+
+            fetch('/aliment/limit', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params)
+            })
+            .then(response => response.json())
+            .then(data => displayAliments(data))
+            .catch(error => console.error('Error:', error));
+        }
+
+
+
+        function displayAliments(aliments) {
+            var table = '<table><tr><th>Name</th><th>Kcal</th><th>Proteins</th><th>Carbohydrates</th><th>Fats</th><th>Fibres</th><th>Sodium</th><th>Group</th></tr>';
+            aliments.forEach(function(aliment) {
+                table += `<tr>
+                            <td>${aliment.anom}</td>
+                            <td>${aliment.kcal}</td>
+                            <td>${aliment.proteines}</td>
+                            <td>${aliment.glucides}</td>
+                            <td>${aliment.lipides}</td>
+                            <td>${aliment.fibres}</td>
+                            <td>${aliment.sodium}</td>
+                            <td>${aliment.groupe}</td>
+                          </tr>`;
+            });
+            table += '</table>';
+
+            document.getElementById('content').innerHTML = table;
+        }
+
+        function showLoginForm() {
+            var loginForm = `
+            <form onsubmit="return submitLoginForm()">
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email" required><br><br>
+
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password" required><br><br>
+
+                <input type="submit" value="Submit">
+                <p id="error-message"></p>
+            </form>
+            `;
+
+            document.getElementById('content').innerHTML = loginForm;
+        }
+
+        function submitLoginForm() {
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/login", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 204) {
+                        // Reloads the page on successful login
+                        window.location.reload();
+                    } else {
+                        // Display the error message below the login form
+                        var errorMessage = document.getElementById('error-message'); // Ensure you have an element with id 'error-message' in your HTML to display the error.
+                        errorMessage.innerText = "Error: " + xhr.statusText;
+                        errorMessage.style.display = 'block';
+                    }
+                }
+            };
+
+            var data = JSON.stringify({"email": email, "password": password});
+            xhr.send(data);
+
+            return false; // Prevents form from submitting the traditional way
+        }   
+
+    </script>
+</head>
+<body>
+    <div id="content"></div>
+</body>
+</html>
