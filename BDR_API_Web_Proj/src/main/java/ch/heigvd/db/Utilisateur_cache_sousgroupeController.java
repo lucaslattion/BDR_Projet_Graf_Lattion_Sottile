@@ -30,8 +30,8 @@ public class Utilisateur_cache_sousgroupeController {
 
             int limit = 0;   // Default 0 means all elements
             int offset = 0;  // Default 0 means no skipped elements
-            String anom = null;
-            String groupe = null;
+            String email = null;
+            String sgnom = null;
 
             // Parse JSON from the request body
             if (ctx.body() != null && !ctx.body().isEmpty()) {
@@ -44,24 +44,24 @@ public class Utilisateur_cache_sousgroupeController {
                 if (requestBody.has("offset")) {
                     offset = requestBody.get("offset").getAsInt();
                 }
-                if (requestBody.has("anom")) {
-                    anom = requestBody.get("anom").getAsString();
+                if (requestBody.has("email")) {
+                    email = requestBody.get("email").getAsString();
                 }
-                if (requestBody.has("groupe")) {
-                    groupe = requestBody.get("groupe").getAsString();
+                if (requestBody.has("sgnom")) {
+                    sgnom = requestBody.get("sgnom").getAsString();
                 }
             }
 
-            List<Aliment> alimentList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM aliment"); // assuming the table name is 'aliment'
+            List<Utilisateur_cache_sousgroupe> utilisateur_cache_sousgroupeList = new ArrayList<>();
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM utilisateur_cache_sousgroupe"); // assuming the table name is 'utilisateur_cache_sousgroupe'
 
             List<String> conditions = new ArrayList<>();
 
-            if (anom != null) {
-                conditions.add("anom = ?");
+            if (email != null) {
+                conditions.add("email = ?");
             }
-            if (groupe != null) {
-                conditions.add("groupe = ?");
+            if (sgnom != null) {
+                conditions.add("sgnom = ?");
             }
 
             if (!conditions.isEmpty()) {
@@ -79,28 +79,22 @@ public class Utilisateur_cache_sousgroupeController {
             PreparedStatement stmt = conn.prepareStatement(queryBuilder.toString());
 
             int index = 1;
-            if (anom != null) {
-                stmt.setString(index++, anom);
+            if (email != null) {
+                stmt.setString(index++, email);
             }
-            if (groupe != null) {
-                stmt.setString(index, groupe);
+            if (sgnom != null) {
+                stmt.setString(index, sgnom);
             }
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Aliment aliment = new Aliment();
-                aliment.anom = rs.getString("anom");
-                aliment.kcal = rs.getInt("kcal");
-                aliment.proteines = rs.getDouble("proteines");
-                aliment.glucides = rs.getDouble("glucides");
-                aliment.lipides = rs.getDouble("lipides");
-                aliment.fibres = rs.getDouble("fibres");
-                aliment.sodium = rs.getDouble("sodium");
-                aliment.groupe = rs.getString("groupe");
-                alimentList.add(aliment);
+                Utilisateur_cache_sousgroupe utilisateur_cache_sousgroupe = new Utilisateur_cache_sousgroupe();
+                utilisateur_cache_sousgroupe.email = rs.getString("email");
+                utilisateur_cache_sousgroupe.sgnom = rs.getString("sgnom");
+                utilisateur_cache_sousgroupeList.add(utilisateur_cache_sousgroupe);
             }
 
-            ctx.json(alimentList);
+            ctx.json(utilisateur_cache_sousgroupeList);
             return;
 
         }
@@ -110,32 +104,20 @@ public class Utilisateur_cache_sousgroupeController {
     public void create(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
 
-            Aliment newAliment = ctx.bodyValidator(Aliment.class)
-                    .check(obj -> obj.anom != null, "Missing aliment name")
-                    .check(obj -> obj.kcal >= 0, "Invalid calorie count")
-                    .check(obj -> obj.proteines >= 0, "Invalid protein count")
-                    .check(obj -> obj.glucides >= 0, "Invalid carbohydrate count")
-                    .check(obj -> obj.lipides >= 0, "Invalid fat count")
-                    .check(obj -> obj.fibres >= 0, "Invalid fiber count")
-                    .check(obj -> obj.sodium >= 0, "Invalid sodium count")
-                    .check(obj -> obj.groupe != null, "Missing groupe")
+            Utilisateur_cache_sousgroupe newUtilisateur_cache_sousgroupe = ctx.bodyValidator(Utilisateur_cache_sousgroupe.class)
+                    .check(obj -> obj.email != null, "Missing email")
+                    .check(obj -> obj.sgnom != null, "Missing sgnom")
                     .get();
 
             try (PreparedStatement insertStmt = conn.prepareStatement(
-                    "INSERT INTO aliment (anom, kcal, proteines, glucides, lipides, fibres, sodium, groupe) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    "INSERT INTO utilisateur_cache_sousgroupe (email, sgnom) VALUES (?, ?)")) {
 
-                insertStmt.setString(1, newAliment.anom);
-                insertStmt.setInt(2, newAliment.kcal);
-                insertStmt.setDouble(3, newAliment.proteines);
-                insertStmt.setDouble(4, newAliment.glucides);
-                insertStmt.setDouble(5, newAliment.lipides);
-                insertStmt.setDouble(6, newAliment.fibres);
-                insertStmt.setDouble(7, newAliment.sodium);
-                insertStmt.setString(8, newAliment.groupe);
+                insertStmt.setString(1, newUtilisateur_cache_sousgroupe.email);
+                insertStmt.setString(2, newUtilisateur_cache_sousgroupe.sgnom);
 
                 insertStmt.executeUpdate();
                 ctx.status(HttpStatus.CREATED);
-                ctx.json(newAliment);
+                ctx.json(newUtilisateur_cache_sousgroupe);
                 return;
             } catch (SQLException e) {
                 if (e.getSQLState().equals("23505")) { // Unique violation
@@ -150,28 +132,21 @@ public class Utilisateur_cache_sousgroupeController {
 
     public void update(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
-            Aliment updateAliment = ctx.bodyValidator(Aliment.class)
-                    .check(obj -> obj.anom != null, "Missing aliment name")
-                    .check(obj -> obj.kcal >= 0, "Invalid calorie count")
-                    .check(obj -> obj.proteines >= 0, "Invalid protein count")
-                    .check(obj -> obj.glucides >= 0, "Invalid carbohydrate count")
-                    .check(obj -> obj.lipides >= 0, "Invalid fat count")
-                    .check(obj -> obj.fibres >= 0, "Invalid fiber count")
-                    .check(obj -> obj.sodium >= 0, "Invalid sodium count")
-                    .check(obj -> obj.groupe != null, "Missing groupe")
+
+            String email = ctx.pathParam("email");
+			String sgnom = ctx.pathParam("sgnom");
+
+            Utilisateur_cache_sousgroupe updateUtilisateur_cache_sousgroupe = ctx.bodyValidator(Utilisateur_cache_sousgroupe.class)
+                    .check(obj -> obj.email != null, "Missing email")
+                    .check(obj -> obj.sgnom != null, "Missing sgnom")
                     .get();
 
             PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE aliment SET kcal = ?, proteines = ?, glucides = ?, lipides = ?, fibres = ?, sodium = ?, groupe = ? WHERE anom = ?");
-            stmt.setInt(1, updateAliment.kcal);
-            stmt.setDouble(2, updateAliment.proteines);
-            stmt.setDouble(3, updateAliment.glucides);
-            stmt.setDouble(4, updateAliment.lipides);
-            stmt.setDouble(5, updateAliment.fibres);
-            stmt.setDouble(6, updateAliment.sodium);
-            stmt.setString(7, updateAliment.groupe);
-            stmt.setString(8, updateAliment.anom);
-
+                    "UPDATE utilisateur_cache_sousgroupe SET email = ?, sgnom = ? WHERE email = ? AND sgnom = ?");
+            stmt.setString(1, updateUtilisateur_cache_sousgroupe.email);
+            stmt.setString(2, updateUtilisateur_cache_sousgroupe.sgnom);
+            stmt.setString(3, email);
+			stmt.setString(4, sgnom);
             int updatedRows = stmt.executeUpdate();
             if (updatedRows == 0) {
                 throw new NotFoundResponse();
@@ -185,10 +160,12 @@ public class Utilisateur_cache_sousgroupeController {
 
     public void delete(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
-            String anom = ctx.pathParam("anom");
+            String email = ctx.pathParam("email");
+			String sgnom = ctx.pathParam("sgnom");
 
-            PreparedStatement stmt = conn.prepareStatement("DELETE FROM aliment WHERE anom = ?");
-            stmt.setString(1, anom);
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM utilisateur_cache_sousgroupe WHERE email = ? AND sgnom = ?");
+            stmt.setString(1, email);
+			stmt.setString(2, sgnom);
 
             int deletedRows = stmt.executeUpdate();
             if (deletedRows == 0) {

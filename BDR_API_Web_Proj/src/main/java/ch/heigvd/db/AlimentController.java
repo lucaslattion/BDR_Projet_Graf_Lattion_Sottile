@@ -150,6 +150,9 @@ public class AlimentController {
 
     public void update(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
+
+            String anom = ctx.pathParam("anom");
+
             Aliment updateAliment = ctx.bodyValidator(Aliment.class)
                     .check(obj -> obj.anom != null, "Missing aliment name")
                     .check(obj -> obj.kcal >= 0, "Invalid calorie count")
@@ -162,15 +165,16 @@ public class AlimentController {
                     .get();
 
             PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE aliment SET kcal = ?, proteines = ?, glucides = ?, lipides = ?, fibres = ?, sodium = ?, groupe = ? WHERE anom = ?");
-            stmt.setInt(1, updateAliment.kcal);
-            stmt.setDouble(2, updateAliment.proteines);
-            stmt.setDouble(3, updateAliment.glucides);
-            stmt.setDouble(4, updateAliment.lipides);
-            stmt.setDouble(5, updateAliment.fibres);
-            stmt.setDouble(6, updateAliment.sodium);
-            stmt.setString(7, updateAliment.groupe);
-            stmt.setString(8, updateAliment.anom);
+                    "UPDATE aliment SET anom = ?, kcal = ?, proteines = ?, glucides = ?, lipides = ?, fibres = ?, sodium = ?, groupe = ? WHERE anom = ?");
+            stmt.setString(1, updateAliment.anom);
+            stmt.setInt(2, updateAliment.kcal);
+            stmt.setDouble(3, updateAliment.proteines);
+            stmt.setDouble(4, updateAliment.glucides);
+            stmt.setDouble(5, updateAliment.lipides);
+            stmt.setDouble(6, updateAliment.fibres);
+            stmt.setDouble(7, updateAliment.sodium);
+            stmt.setString(8, updateAliment.groupe);
+            stmt.setString(9, anom);
 
             int updatedRows = stmt.executeUpdate();
             if (updatedRows == 0) {

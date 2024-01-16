@@ -30,8 +30,8 @@ public class Recette_contient_alimentController {
 
             int limit = 0;   // Default 0 means all elements
             int offset = 0;  // Default 0 means no skipped elements
+            String rnom = null;
             String anom = null;
-            String groupe = null;
 
             // Parse JSON from the request body
             if (ctx.body() != null && !ctx.body().isEmpty()) {
@@ -44,24 +44,24 @@ public class Recette_contient_alimentController {
                 if (requestBody.has("offset")) {
                     offset = requestBody.get("offset").getAsInt();
                 }
+                if (requestBody.has("rnom")) {
+                    rnom = requestBody.get("rnom").getAsString();
+                }
                 if (requestBody.has("anom")) {
                     anom = requestBody.get("anom").getAsString();
                 }
-                if (requestBody.has("groupe")) {
-                    groupe = requestBody.get("groupe").getAsString();
-                }
             }
 
-            List<Aliment> alimentList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM aliment"); // assuming the table name is 'aliment'
+            List<Recette_contient_aliment> recette_contient_alimentList = new ArrayList<>();
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM recette_contient_aliment"); // assuming the table name is 'aliment'
 
             List<String> conditions = new ArrayList<>();
 
+            if (rnom != null) {
+                conditions.add("rnom = ?");
+            }
             if (anom != null) {
                 conditions.add("anom = ?");
-            }
-            if (groupe != null) {
-                conditions.add("groupe = ?");
             }
 
             if (!conditions.isEmpty()) {
@@ -79,28 +79,24 @@ public class Recette_contient_alimentController {
             PreparedStatement stmt = conn.prepareStatement(queryBuilder.toString());
 
             int index = 1;
-            if (anom != null) {
-                stmt.setString(index++, anom);
+            if (rnom != null) {
+                stmt.setString(index++, rnom);
             }
-            if (groupe != null) {
-                stmt.setString(index, groupe);
+            if (anom != null) {
+                stmt.setString(index, anom);
             }
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Aliment aliment = new Aliment();
-                aliment.anom = rs.getString("anom");
-                aliment.kcal = rs.getInt("kcal");
-                aliment.proteines = rs.getDouble("proteines");
-                aliment.glucides = rs.getDouble("glucides");
-                aliment.lipides = rs.getDouble("lipides");
-                aliment.fibres = rs.getDouble("fibres");
-                aliment.sodium = rs.getDouble("sodium");
-                aliment.groupe = rs.getString("groupe");
-                alimentList.add(aliment);
+                Recette_contient_aliment recette_contient_aliment = new Recette_contient_aliment();
+                recette_contient_aliment.rnom = rs.getString("rnom");
+				recette_contient_aliment.anom = rs.getString("anom");
+                recette_contient_aliment.quantite = rs.getInt("quantite");
+				recette_contient_aliment.unite_mesure = rs.getString("unite_mesure");
+                recette_contient_alimentList.add(recette_contient_aliment);
             }
 
-            ctx.json(alimentList);
+            ctx.json(recette_contient_alimentList);
             return;
 
         }
@@ -110,32 +106,23 @@ public class Recette_contient_alimentController {
     public void create(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
 
-            Aliment newAliment = ctx.bodyValidator(Aliment.class)
+            Recette_contient_aliment newRecette_contient_aliment = ctx.bodyValidator(Recette_contient_aliment.class)
+                    .check(obj -> obj.rnom != null, "Missing recette name")
                     .check(obj -> obj.anom != null, "Missing aliment name")
-                    .check(obj -> obj.kcal >= 0, "Invalid calorie count")
-                    .check(obj -> obj.proteines >= 0, "Invalid protein count")
-                    .check(obj -> obj.glucides >= 0, "Invalid carbohydrate count")
-                    .check(obj -> obj.lipides >= 0, "Invalid fat count")
-                    .check(obj -> obj.fibres >= 0, "Invalid fiber count")
-                    .check(obj -> obj.sodium >= 0, "Invalid sodium count")
-                    .check(obj -> obj.groupe != null, "Missing groupe")
+					.check(obj -> obj.quantite >= 0, "Invalid quantite count")
+					.check(obj -> obj.unite_mesure != null, "Missing unite_mesure")
                     .get();
 
             try (PreparedStatement insertStmt = conn.prepareStatement(
-                    "INSERT INTO aliment (anom, kcal, proteines, glucides, lipides, fibres, sodium, groupe) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    "INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES (?, ?, ?, ?)")) {
 
-                insertStmt.setString(1, newAliment.anom);
-                insertStmt.setInt(2, newAliment.kcal);
-                insertStmt.setDouble(3, newAliment.proteines);
-                insertStmt.setDouble(4, newAliment.glucides);
-                insertStmt.setDouble(5, newAliment.lipides);
-                insertStmt.setDouble(6, newAliment.fibres);
-                insertStmt.setDouble(7, newAliment.sodium);
-                insertStmt.setString(8, newAliment.groupe);
-
+                insertStmt.setString(1, newRecette_contient_aliment.rnom);
+				insertStmt.setString(2, newRecette_contient_aliment.anom);
+                insertStmt.setDouble(3, newRecette_contient_aliment.quantite);
+                insertStmt.setString(4, newRecette_contient_aliment.unite_mesure);
                 insertStmt.executeUpdate();
                 ctx.status(HttpStatus.CREATED);
-                ctx.json(newAliment);
+                ctx.json(newRecette_contient_aliment);
                 return;
             } catch (SQLException e) {
                 if (e.getSQLState().equals("23505")) { // Unique violation
@@ -150,27 +137,23 @@ public class Recette_contient_alimentController {
 
     public void update(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
-            Aliment updateAliment = ctx.bodyValidator(Aliment.class)
+
+            String rnom = ctx.pathParam("rnom");
+
+            Recette_contient_aliment updateRecette_contient_aliment = ctx.bodyValidator(Recette_contient_aliment.class)
+                    .check(obj -> obj.rnom != null, "Missing recette name")
                     .check(obj -> obj.anom != null, "Missing aliment name")
-                    .check(obj -> obj.kcal >= 0, "Invalid calorie count")
-                    .check(obj -> obj.proteines >= 0, "Invalid protein count")
-                    .check(obj -> obj.glucides >= 0, "Invalid carbohydrate count")
-                    .check(obj -> obj.lipides >= 0, "Invalid fat count")
-                    .check(obj -> obj.fibres >= 0, "Invalid fiber count")
-                    .check(obj -> obj.sodium >= 0, "Invalid sodium count")
-                    .check(obj -> obj.groupe != null, "Missing groupe")
+					.check(obj -> obj.quantite >= 0, "Invalid quantite count")
+					.check(obj -> obj.unite_mesure != null, "Missing unite_mesure")
                     .get();
 
             PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE aliment SET kcal = ?, proteines = ?, glucides = ?, lipides = ?, fibres = ?, sodium = ?, groupe = ? WHERE anom = ?");
-            stmt.setInt(1, updateAliment.kcal);
-            stmt.setDouble(2, updateAliment.proteines);
-            stmt.setDouble(3, updateAliment.glucides);
-            stmt.setDouble(4, updateAliment.lipides);
-            stmt.setDouble(5, updateAliment.fibres);
-            stmt.setDouble(6, updateAliment.sodium);
-            stmt.setString(7, updateAliment.groupe);
-            stmt.setString(8, updateAliment.anom);
+                    "UPDATE recette_contient_aliment SET rnom = ?, anom = ?, quantite = ?, unite_mesure = ? WHERE rnom = ?");
+            stmt.setString(1, updateRecette_contient_aliment.rnom);
+			stmt.setString(8, updateRecette_contient_aliment.anom);
+            stmt.setDouble(3, updateRecette_contient_aliment.quantite);
+            stmt.setString(4, updateRecette_contient_aliment.unite_mesure);
+			stmt.setString(9, rnom);
 
             int updatedRows = stmt.executeUpdate();
             if (updatedRows == 0) {
@@ -185,10 +168,10 @@ public class Recette_contient_alimentController {
 
     public void delete(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
-            String anom = ctx.pathParam("anom");
+            String rnom = ctx.pathParam("rnom");
 
-            PreparedStatement stmt = conn.prepareStatement("DELETE FROM aliment WHERE anom = ?");
-            stmt.setString(1, anom);
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM recette_contient_aliment WHERE rnom = ?");
+            stmt.setString(1, rnom);
 
             int deletedRows = stmt.executeUpdate();
             if (deletedRows == 0) {
