@@ -16,7 +16,7 @@ body {
     text-align: center;
 }
  
-input[type="text"], input[type="password"] {
+input[type="text"] {
     margin: 10px 0;
     padding: 10px;
     width: 80%;
@@ -36,4 +36,9 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+.button-container {
+    margin-top: 10px;
+}
+
 
