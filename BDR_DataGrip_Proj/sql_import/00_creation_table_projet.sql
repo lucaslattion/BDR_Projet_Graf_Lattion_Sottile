@@ -68,9 +68,16 @@ create table Vitamine(
     primary key (vinom)
 );
 
+create table UniteDeMesure(
+    udmnom varchar(30),
+    primary key (udmnom)
+);
+
 CREATE TABLE Utilisateur_possede_Aliment(
     email varchar(30),
     anom varchar(80),
+    quantite numeric NOT NULL,
+    unite_mesure varchar(30) NOT NULL,
     primary key (email, anom)
 );
 
@@ -115,8 +122,8 @@ CREATE TABLE Recette_utilise_Ustensil(
 CREATE TABLE Recette_contient_Aliment(
     rnom varchar(50),
     anom varchar(120),
-    quantite numeric,
-    unite_mesure varchar(30),
+    quantite numeric NOT NULL ,
+    unite_mesure varchar(30) NOT NULL ,
     primary key (rnom, anom)
 );
 
@@ -131,6 +138,9 @@ ALTER TABLE Utilisateur_possede_Aliment
     ADD CONSTRAINT Utilisateur_possede_Aliment_user_fkey FOREIGN KEY (email) REFERENCES Utilisateur(email) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE Utilisateur_possede_Aliment
     ADD CONSTRAINT Utilisateur_possede_Aliment_aliment_fkey FOREIGN KEY (anom) REFERENCES Aliment(anom) ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE Utilisateur_possede_Aliment
+    ADD CONSTRAINT Utilisateur_possede_Aliment_uniteDeMesure_fkey FOREIGN KEY (unite_mesure) REFERENCES UniteDeMesure(udmnom) ON UPDATE CASCADE ON DELETE RESTRICT;
+
 
 ALTER TABLE Utilisateur_cache_Aliment
     ADD CONSTRAINT Utilisateur_cache_Aliment_user_fkey FOREIGN KEY (email) REFERENCES Utilisateur(email) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -166,6 +176,8 @@ ALTER TABLE Recette_contient_Aliment
     ADD CONSTRAINT Recette_contient_Aliment_recette_fkey FOREIGN KEY (rnom) REFERENCES Recette(rnom) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE Recette_contient_Aliment
     ADD CONSTRAINT Recette_contient_Aliment_aliment_fkey FOREIGN KEY (anom) REFERENCES Aliment(anom) ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE Recette_contient_Aliment
+    ADD CONSTRAINT Recette_contient_Aliment_uniteDeMesure_fkey FOREIGN KEY (unite_mesure) REFERENCES UniteDeMesure(udmnom) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 ALTER TABLE Aliment_contient_Vitamine
@@ -220,6 +232,19 @@ INSERT INTO type (tnom) VALUES
 ('Boisson'),
 ('Pizza'),
 ('Soupe');
+
+
+
+INSERT INTO UniteDeMesure (udmnom) VALUES
+('grammes'),
+('cuillères à soupe'),
+('cuillères à café'),
+('pincée'),
+('litres'),
+('kilogrammes'),
+('centilitres');
+
+
 
 
 
@@ -1062,7 +1087,7 @@ INSERT INTO Recette_utilise_Ustensil (rnom, unom) VALUES
 INSERT INTO Recette_contient_Aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Poulet rôti au yogourt', 'Poulet entier, avec peau, cru', 230, 'grammes'),
 ('Poulet rôti au yogourt', 'Yogourt, nature', 50, 'grammes'),
-('Poulet rôti au yogourt', 'Sel', 10, 'grammes');
+('Poulet rôti au yogourt', 'Sel', 2, 'pincée');
 
 
 INSERT INTO Recette (rnom, instructions, type_recette) VALUES
@@ -1077,7 +1102,7 @@ INSERT INTO Recette_contient_Aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Smoothie aux fruits tropicaux', 'Ananas', 20, 'grammes'),
 ('Smoothie aux fruits tropicaux', 'Banane', 50, 'grammes'),
 ('Smoothie aux fruits tropicaux', 'Yogourt aux fraises', 100, 'grammes'),
-('Smoothie aux fruits tropicaux', 'Miel', 10, 'grammes');
+('Smoothie aux fruits tropicaux', 'Miel', 10, 'centilitres');
 
 INSERT INTO Recette (rnom, instructions, type_recette) VALUES
 ('Pâtes à l''ail', 'Faites cuire les pâtes al dente. Dans une poêle, faites revenir de l''ail et du piment(option.) dans de l''huile d''olive. Mélangez les pâtes avec la sauce. Servez chaud.', 'Plat principal');
@@ -1092,7 +1117,7 @@ INSERT INTO Recette_utilise_Ustensil (rnom, unom) VALUES
 INSERT INTO Recette_contient_Aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Pâtes à l''ail', 'Pâtes', 100, 'grammes'),
 ('Pâtes à l''ail', 'Ail', 20, 'grammes'),
-('Pâtes à l''ail', 'Huile d''olive', 15, 'grammes');
+('Pâtes à l''ail', 'Huile d''olive', 15, 'cuillères à soupe');
 
 
 INSERT INTO Recette (rnom, instructions, type_recette) VALUES
@@ -1107,8 +1132,8 @@ INSERT INTO Recette_utilise_Ustensil (rnom, unom) VALUES
 
 INSERT INTO Recette_contient_Aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Saumon au citron', 'Saumon d''élevage, cru', 150, 'grammes'),
-('Saumon au citron', 'Citron', 20, 'grammes'),
-('Saumon au citron', 'Sel', 10, 'grammes');
+('Saumon au citron', 'Citron', 2, 'cuillères à café'),
+('Saumon au citron', 'Sel', 1, 'pincée');
 
 INSERT INTO Recette (rnom, instructions, type_recette) VALUES
 ('Omelette aux champignons', 'Battez les œufs dans un bol. Faites sauter des champignons dans une poêle avec du beurre. Versez les œufs battus sur les champignons. Cuisez des deux côtés jusqu''à ce que l''omelette soit bien cuite. Servez chaud.', 'Plat principal');
@@ -1124,7 +1149,7 @@ INSERT INTO Recette_contient_Aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Omelette aux champignons', 'Oeuf', 120, 'grammes'),
 ('Omelette aux champignons', 'Champignon de Paris', 30, 'grammes'),
 ('Omelette aux champignons', 'Beurre', 20, 'grammes'),
-('Omelette aux champignons', 'Sel', 10, 'grammes');
+('Omelette aux champignons', 'Sel', 2, 'pincée');
 
 
 INSERT INTO Recette (rnom, instructions, type_recette) VALUES
@@ -1154,7 +1179,7 @@ INSERT INTO Recette_contient_Aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Smoothie aux baies', 'Myrtille', 20, 'grammes'),
 ('Smoothie aux baies', 'Fraise', 30, 'grammes'),
 ('Smoothie aux baies', 'Yogourt, nature', 60, 'grammes'),
-('Smoothie aux baies', 'Miel', 15, 'grammes');
+('Smoothie aux baies', 'Miel', 15, 'centilitres');
 
 
 INSERT INTO Recette (rnom, instructions, type_recette) VALUES
@@ -1183,8 +1208,8 @@ INSERT INTO Recette_utilise_Ustensil (rnom, unom) VALUES
 
 INSERT INTO Recette_contient_Aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Poulet au miel et à la moutarde', 'Cuisse de poulet', 300, 'grammes'),
-('Poulet au miel et à la moutarde', 'Sel', 10, 'grammes'),
-('Poulet au miel et à la moutarde', 'Miel', 20, 'grammes'),
+('Poulet au miel et à la moutarde', 'Sel', 1, 'pincée'),
+('Poulet au miel et à la moutarde', 'Miel', 20, 'centilitres'),
 ('Poulet au miel et à la moutarde', 'Moutarde', 20, 'grammes');
 
 
@@ -1229,7 +1254,7 @@ INSERT INTO Recette_contient_Aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Salade de crevettes et avocat', 'Avocat', 150, 'grammes'),
 ('Salade de crevettes et avocat', 'Tomate', 100, 'grammes'),
 ('Salade de crevettes et avocat', 'Laitue', 100, 'grammes'),
-('Salade de crevettes et avocat', 'Vinaigrette (avec huile de colza)', 30, 'grammes');
+('Salade de crevettes et avocat', 'Vinaigrette (avec huile de colza)', 2, 'cuillères à soupe');
 
 
 INSERT INTO Recette (rnom, instructions, type_recette) VALUES
@@ -1244,7 +1269,7 @@ INSERT INTO Recette_utilise_Ustensil (rnom, unom) VALUES
 INSERT INTO Recette_contient_Aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Soupe de courge', 'Courge', 120, 'grammes'),
 ('Soupe de courge', 'Bouillon de légumes', 300, 'grammes'),
-('Soupe de courge', 'Sel', 10, 'grammes');
+('Soupe de courge', 'Sel', 2, 'pincée');
 
 
 INSERT INTO Recette (rnom, instructions, type_recette) VALUES
@@ -1261,8 +1286,8 @@ INSERT INTO Recette_contient_Aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Poulet grillé au citron et à l''ail', 'Poulet', 200, 'grammes'),
 ('Poulet grillé au citron et à l''ail', 'Ail', 20, 'grammes'),
 ('Poulet grillé au citron et à l''ail', 'Citron', 30, 'grammes'),
-('Poulet grillé au citron et à l''ail', 'Huile d''olive', 15, 'grammes'),
-('Poulet grillé au citron et à l''ail', 'Sel', 10, 'grammes');
+('Poulet grillé au citron et à l''ail', 'Huile d''olive', 1, 'cuillères à soupe'),
+('Poulet grillé au citron et à l''ail', 'Sel', 1, 'pincée');
 
 
 INSERT INTO Recette (rnom, instructions, type_recette) VALUES
@@ -1280,8 +1305,8 @@ INSERT INTO Recette_contient_Aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Salade de pâtes aux légumes grillés', 'Poivrons', 70, 'grammes'),
 ('Salade de pâtes aux légumes grillés', 'Courgette', 70, 'grammes'),
 ('Salade de pâtes aux légumes grillés', 'Tomate', 65, 'grammes'),
-('Salade de pâtes aux légumes grillés', 'Huile d''olive', 15, 'grammes'),
-('Salade de pâtes aux légumes grillés', 'Sel', 10, 'grammes');
+('Salade de pâtes aux légumes grillés', 'Huile d''olive', 2, 'cuillères à soupe'),
+('Salade de pâtes aux légumes grillés', 'Sel', 1, 'pincée');
 
 
 INSERT INTO Recette (rnom, instructions, type_recette) VALUES
@@ -1296,7 +1321,7 @@ INSERT INTO Recette_utilise_Ustensil (rnom, unom) VALUES
 
 INSERT INTO Recette_contient_Aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Saumon en croûte de noix', 'Saumon sauvage, cru', 150, 'grammes'),
-('Saumon en croûte de noix', 'Sel', 10, 'grammes'),
+('Saumon en croûte de noix', 'Sel', 1, 'pincée'),
 ('Saumon en croûte de noix', 'Citron', 20, 'grammes'),
 ('Saumon en croûte de noix', 'Noix', 40, 'grammes');
 
@@ -1429,19 +1454,19 @@ INSERT INTO Recette (rnom, instructions, type_recette) VALUES
 
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Salade César', 'Laitue romaine', 200, 'grammes'),
-('Salade César', 'Huile d''olive', 3, 'cuillères à soupe'),
-('Salade César', 'Sauce Worcestershire', 1, 'cuillère à soupe'),
-('Salade César', 'Ail', 2, 'gousses'),
+('Salade César', 'Huile d''olive', 1, 'cuillères à soupe'),
+('Salade César', 'Sauce Worcestershire', 2, 'cuillères à soupe'),
+('Salade César', 'Ail', 10, 'grammes'),
 ('Salade César', 'Sel', 1, 'pincée'),
 ('Salade César', 'Poivre', 1, 'pincée'),
-('Salade César', 'Pain', 100, 'grammes'), -- pour les croûtons
+('Salade César', 'Pain', 100, 'grammes'),
 ('Salade César', 'Parmesan', 50, 'grammes');
 
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
-('Poulet rôti', 'Poulet', 1, 'unité'), -- Supposant qu'une unité est un poulet entier
+('Poulet rôti', 'Poulet', 300, 'grammes'),
 ('Poulet rôti', 'Sel', 1, 'pincée'),
 ('Poulet rôti', 'Poivre', 1, 'pincée'),
-('Poulet rôti', 'Thym', 1, 'cuillère à café'),
+('Poulet rôti', 'Thym', 1, 'cuillères à café'),
 ('Poulet rôti', 'Huile d''olive', 2, 'cuillères à soupe');
 
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
@@ -1449,7 +1474,7 @@ INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Gazpacho', 'Poivrons', 200, 'grammes'),
 ('Gazpacho', 'Concombre', 150, 'grammes'),
 ('Gazpacho', 'Oignon', 100, 'grammes'),
-('Gazpacho', 'Ail', 2, 'gousses'),
+('Gazpacho', 'Ail', 20, 'grammes'),
 ('Gazpacho', 'Vinaigre de cidre', 2, 'cuillères à soupe'),
 ('Gazpacho', 'Huile d''olive', 3, 'cuillères à soupe');
 
@@ -1457,9 +1482,9 @@ INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Burger végétarien', 'Haricots noirs', 200, 'grammes'),
 ('Burger végétarien', 'Oignon', 50, 'grammes'),
-('Burger végétarien', 'Paprika', 5, 'grammes'),
-('Burger végétarien', 'Pain à hamburger', 2, 'unités'),
-('Burger végétarien', 'Tomate', 1, 'unité'),
+('Burger végétarien', 'Paprika', 2, 'pincée'),
+('Burger végétarien', 'Pain à hamburger', 200, 'grammes'),
+('Burger végétarien', 'Tomate', 50, 'grammes'),
 ('Burger végétarien', 'Laitue', 30, 'grammes');
 
 
@@ -1476,24 +1501,24 @@ INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Ratatouille', 'Aubergine', 200, 'grammes'),
 ('Ratatouille', 'Courgette', 200, 'grammes'),
 ('Ratatouille', 'Oignon', 100, 'grammes'),
-('Ratatouille', 'Ail', 2, 'gousses'),
+('Ratatouille', 'Ail', 30, 'grammes'),
 ('Ratatouille', 'Huile d''olive', 2, 'cuillères à soupe'),
-('Ratatouille', 'Herbe de Provence', 1, 'cuillère à café'),
+('Ratatouille', 'Herbe de Provence', 1, 'cuillères à café'),
 ('Ratatouille', 'Sel', 1, 'pincée');
 
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Crêpes', 'Farine', 250, 'grammes'),
-('Crêpes', 'Oeuf', 4, 'unités'),
-('Crêpes', 'Lait', 500, 'millilitres'),
+('Crêpes', 'Oeuf', 200, 'grammes'),
+('Crêpes', 'Lait', 50, 'centilitres'),
 ('Crêpes', 'Sucre', 2, 'cuillères à soupe'),
 ('Crêpes', 'Beurre', 30, 'grammes'),
 ('Crêpes', 'Sel', 1, 'pincée');
 
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
-('Quiche Lorraine', 'Pâte brisée', 1, 'unité'),
+('Quiche Lorraine', 'Pâte brisée', 300, 'grammes'),
 ('Quiche Lorraine', 'Lardon', 200, 'grammes'),
-('Quiche Lorraine', 'Oeuf', 3, 'unités'),
-('Quiche Lorraine', 'Crème fraîche', 200, 'millilitres'),
+('Quiche Lorraine', 'Oeuf', 150, 'grammes'),
+('Quiche Lorraine', 'Crème fraîche', 20, 'centilitres'),
 ('Quiche Lorraine', 'Noix de muscade', 1, 'pincée'),
 ('Quiche Lorraine', 'Sel', 1, 'pincée'),
 ('Quiche Lorraine', 'Poivre', 1, 'pincée');
@@ -1501,7 +1526,7 @@ INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Risotto aux champignons', 'Champignon', 200, 'grammes'),
 ('Risotto aux champignons', 'Oignon', 50, 'grammes'),
-('Risotto aux champignons', 'Bouillon de légumes', 500, 'millilitres'),
+('Risotto aux champignons', 'Bouillon de légumes', 500, 'centilitres'),
 ('Risotto aux champignons', 'Parmesan', 50, 'grammes'),
 ('Risotto aux champignons', 'Beurre', 20, 'grammes'),
 ('Risotto aux champignons', 'Huile d''olive', 2, 'cuillères à soupe'),
@@ -1512,7 +1537,7 @@ INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Gâteau au chocolat', 'Chocolat', 200, 'grammes'),
 ('Gâteau au chocolat', 'Beurre', 100, 'grammes'),
-('Gâteau au chocolat', 'Oeuf', 3, 'unités'),
+('Gâteau au chocolat', 'Oeuf', 150, 'grammes'),
 ('Gâteau au chocolat', 'Sucre', 150, 'grammes'),
 ('Gâteau au chocolat', 'Farine', 80, 'grammes');
 
@@ -1525,9 +1550,9 @@ INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Lasagnes aux épinards et ricotta', 'Feuille de lasagne', 250, 'grammes'),
 ('Lasagnes aux épinards et ricotta', 'Épinard', 200, 'grammes'),
 ('Lasagnes aux épinards et ricotta', 'Ricotta', 250, 'grammes'),
-('Lasagnes aux épinards et ricotta', 'Sauce tomate', 200, 'millilitres'),
-('Lasagnes aux épinards et ricotta', 'Ail', 2, 'gousses'),
-('Lasagnes aux épinards et ricotta', 'Oignon', 1, 'unité'),
+('Lasagnes aux épinards et ricotta', 'Sauce tomate', 200, 'centilitres'),
+('Lasagnes aux épinards et ricotta', 'Ail', 30, 'grammes'),
+('Lasagnes aux épinards et ricotta', 'Oignon', 40, 'grammes'),
 ('Lasagnes aux épinards et ricotta', 'Huile d''olive', 2, 'cuillères à soupe'),
 ('Lasagnes aux épinards et ricotta', 'Sel', 1, 'pincée'),
 ('Lasagnes aux épinards et ricotta', 'Poivre', 1, 'pincée');
@@ -1535,38 +1560,38 @@ INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 
 
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
-('Quiche aux champignons et poireaux', 'Pâte brisée', 1, 'unité'),
+('Quiche aux champignons et poireaux', 'Pâte brisée', 250, 'grammes'),
 ('Quiche aux champignons et poireaux', 'Champignon', 200, 'grammes'),
 ('Quiche aux champignons et poireaux', 'Poireau', 100, 'grammes'),
-('Quiche aux champignons et poireaux', 'Oeuf', 3, 'unités'),
-('Quiche aux champignons et poireaux', 'Crème fraîche', 200, 'millilitres'),
+('Quiche aux champignons et poireaux', 'Oeuf', 180, 'grammes'),
+('Quiche aux champignons et poireaux', 'Crème fraîche', 200, 'centilitres'),
 ('Quiche aux champignons et poireaux', 'Sel', 1, 'pincée'),
 ('Quiche aux champignons et poireaux', 'Poivre', 1, 'pincée');
 
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Salade de quinoa aux légumes grillés', 'Quinoa', 150, 'grammes'),
-('Salade de quinoa aux légumes grillés', 'Aubergine', 1, 'unité'),
-('Salade de quinoa aux légumes grillés', 'Poivron', 1, 'unité'),
-('Salade de quinoa aux légumes grillés', 'Courgette', 1, 'unité'),
-('Salade de quinoa aux légumes grillés', 'Oignon rouge', 1, 'unité'),
+('Salade de quinoa aux légumes grillés', 'Aubergine', 80, 'grammes'),
+('Salade de quinoa aux légumes grillés', 'Poivron', 70, 'grammes'),
+('Salade de quinoa aux légumes grillés', 'Courgette', 90, 'grammes'),
+('Salade de quinoa aux légumes grillés', 'Oignon rouge', 50, 'grammes'),
 ('Salade de quinoa aux légumes grillés', 'Huile d''olive', 2, 'cuillères à soupe'),
 ('Salade de quinoa aux légumes grillés', 'Sel', 1, 'pincée'),
 ('Salade de quinoa aux légumes grillés', 'Poivre', 1, 'pincée');
 
 
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
-('Omelette aux épinards et feta', 'Oeuf', 3, 'unités'),
+('Omelette aux épinards et feta', 'Oeuf', 120, 'grammes'),
 ('Omelette aux épinards et feta', 'Épinard', 100, 'grammes'),
 ('Omelette aux épinards et feta', 'Feta', 50, 'grammes'),
-('Omelette aux épinards et feta', 'Huile d''olive', 1, 'cuillère à soupe'),
+('Omelette aux épinards et feta', 'Huile d''olive', 1, 'cuillères à soupe'),
 ('Omelette aux épinards et feta', 'Sel', 1, 'pincée'),
 ('Omelette aux épinards et feta', 'Poivre', 1, 'pincée');
 
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
-('Poulet grillé aux herbes', 'Poulet', 1, 'unité'),
-('Poulet grillé aux herbes', 'Thym', 1, 'cuillère à soupe'),
-('Poulet grillé aux herbes', 'Romarin', 1, 'cuillère à soupe'),
-('Poulet grillé aux herbes', 'Ail', 2, 'gousses'),
+('Poulet grillé aux herbes', 'Poulet', 300, 'grammes'),
+('Poulet grillé aux herbes', 'Thym', 1, 'cuillères à soupe'),
+('Poulet grillé aux herbes', 'Romarin', 1, 'cuillères à café'),
+('Poulet grillé aux herbes', 'Ail', 25, 'grammes'),
 ('Poulet grillé aux herbes', 'Huile d''olive', 2, 'cuillères à soupe'),
 ('Poulet grillé aux herbes', 'Sel', 1, 'pincée'),
 ('Poulet grillé aux herbes', 'Poivre', 1, 'pincée');
@@ -1574,57 +1599,57 @@ INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Bowl de buddha au tofu', 'Tofu', 200, 'grammes'),
 ('Bowl de buddha au tofu', 'Quinoa', 100, 'grammes'),
-('Bowl de buddha au tofu', 'Avocat', 1, 'unité'),
-('Bowl de buddha au tofu', 'Concombre', 1, 'unité'),
-('Bowl de buddha au tofu', 'Carotte', 1, 'unité');
+('Bowl de buddha au tofu', 'Avocat', 80, 'grammes'),
+('Bowl de buddha au tofu', 'Concombre', 100, 'grammes'),
+('Bowl de buddha au tofu', 'Carotte', 115, 'grammes');
 
 
 -- Chili con carne sans haricots
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Chili con carne sans haricots', 'Bœuf haché', 500, 'grammes'),
-('Chili con carne sans haricots', 'Tomate', 4, 'unités'),
-('Chili con carne sans haricots', 'Poivron', 2, 'unités'),
-('Chili con carne sans haricots', 'Oignon', 1, 'unité'),
+('Chili con carne sans haricots', 'Tomate', 90, 'grammes'),
+('Chili con carne sans haricots', 'Poivron', 85, 'grammes'),
+('Chili con carne sans haricots', 'Oignon', 45, 'grammes'),
 ('Chili con carne sans haricots', 'Sel', 1, 'pincée'),
 ('Chili con carne sans haricots', 'Poivre', 1, 'pincée');
 
 -- Smoothie bowl aux fruits et noix
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Smoothie bowl aux fruits et noix', 'Fruits assortis', 200, 'grammes'),
-('Smoothie bowl aux fruits et noix', 'Lait d''amande', 200, 'millilitres'),
+('Smoothie bowl aux fruits et noix', 'Lait d''amande', 20, 'centilitres'),
 ('Smoothie bowl aux fruits et noix', 'Graines de chia', 2, 'cuillères à soupe'),
 ('Smoothie bowl aux fruits et noix', 'Noix', 50, 'grammes'),
-('Smoothie bowl aux fruits et noix', 'Miel', 1, 'cuillère à soupe');
+('Smoothie bowl aux fruits et noix', 'Miel', 20, 'centilitres');
 
 -- Soupe de lentilles corail à la tomate
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Soupe de lentilles corail à la tomate', 'Lentilles corail', 200, 'grammes'),
 ('Soupe de lentilles corail à la tomate', 'Tomates pelées', 400, 'grammes'),
-('Soupe de lentilles corail à la tomate', 'Oignon', 1, 'unité'),
-('Soupe de lentilles corail à la tomate', 'Ail', 2, 'gousses'),
-('Soupe de lentilles corail à la tomate', 'Cumin', 1, 'cuillère à café'),
-('Soupe de lentilles corail à la tomate', 'Paprika', 1, 'cuillère à café'),
-('Soupe de lentilles corail à la tomate', 'Bouillon de légumes', 500, 'millilitres');
+('Soupe de lentilles corail à la tomate', 'Oignon', 40, 'grammes'),
+('Soupe de lentilles corail à la tomate', 'Ail', 10, 'grammes'),
+('Soupe de lentilles corail à la tomate', 'Cumin', 1, 'cuillères à café'),
+('Soupe de lentilles corail à la tomate', 'Paprika', 1, 'cuillères à café'),
+('Soupe de lentilles corail à la tomate', 'Bouillon de légumes', 50, 'centilitres');
 
 -- Soupe de lentilles vertes et carottes
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Soupe de lentilles vertes et carottes', 'Lentilles vertes', 200, 'grammes'),
-('Soupe de lentilles vertes et carottes', 'Carotte', 2, 'unités'),
-('Soupe de lentilles vertes et carottes', 'Oignon', 1, 'unité'),
-('Soupe de lentilles vertes et carottes', 'Bouillon de légumes', 500, 'millilitres'),
-('Soupe de lentilles vertes et carottes', 'Thym', 1, 'branche'),
-('Soupe de lentilles vertes et carottes', 'Laurier', 1, 'feuille');
+('Soupe de lentilles vertes et carottes', 'Carotte', 70, 'grammes'),
+('Soupe de lentilles vertes et carottes', 'Oignon', 30, 'grammes'),
+('Soupe de lentilles vertes et carottes', 'Bouillon de légumes', 50, 'centilitres'),
+('Soupe de lentilles vertes et carottes', 'Thym', 1, 'pincée'),
+('Soupe de lentilles vertes et carottes', 'Laurier', 1, 'pincée');
 
 
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Risotto aux champignons et asperges', 'Riz Arborio', 200, 'grammes'),
 ('Risotto aux champignons et asperges', 'Champignon', 150, 'grammes'),
 ('Risotto aux champignons et asperges', 'Asperge', 100, 'grammes'),
-('Risotto aux champignons et asperges', 'Bouillon de légumes', 500, 'millilitres'),
-('Risotto aux champignons et asperges', 'Oignon', 1, 'unité'),
-('Risotto aux champignons et asperges', 'Ail', 2, 'gousses'),
+('Risotto aux champignons et asperges', 'Bouillon de légumes', 50, 'centilitres'),
+('Risotto aux champignons et asperges', 'Oignon', 30, 'grammes'),
+('Risotto aux champignons et asperges', 'Ail', 2, 'grammes'),
 ('Risotto aux champignons et asperges', 'Parmesan', 50, 'grammes'),
-('Risotto aux champignons et asperges', 'Vin blanc', 100, 'millilitres'),
+('Risotto aux champignons et asperges', 'Vin blanc', 100, 'centilitres'),
 ('Risotto aux champignons et asperges', 'Beurre', 30, 'grammes'),
 ('Risotto aux champignons et asperges', 'Huile d''olive', 2, 'cuillères à soupe'),
 ('Risotto aux champignons et asperges', 'Sel', 1, 'pincée'),
@@ -1635,11 +1660,11 @@ INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Risotto aux champignons et épinards', 'Riz Arborio', 200, 'grammes'),
 ('Risotto aux champignons et épinards', 'Champignon', 150, 'grammes'),
 ('Risotto aux champignons et épinards', 'Épinard', 100, 'grammes'),
-('Risotto aux champignons et épinards', 'Bouillon de légumes', 500, 'millilitres'),
-('Risotto aux champignons et épinards', 'Oignon', 1, 'unité'),
-('Risotto aux champignons et épinards', 'Ail', 2, 'gousses'),
+('Risotto aux champignons et épinards', 'Bouillon de légumes', 50, 'centilitres'),
+('Risotto aux champignons et épinards', 'Oignon', 14, 'grammes'),
+('Risotto aux champignons et épinards', 'Ail', 15, 'grammes'),
 ('Risotto aux champignons et épinards', 'Parmesan', 50, 'grammes'),
-('Risotto aux champignons et épinards', 'Vin blanc', 100, 'millilitres'),
+('Risotto aux champignons et épinards', 'Vin blanc', 10, 'centilitres'),
 ('Risotto aux champignons et épinards', 'Huile d''olive', 2, 'cuillères à soupe'),
 ('Risotto aux champignons et épinards', 'Sel', 1, 'pincée'),
 ('Risotto aux champignons et épinards', 'Poivre', 1, 'pincée');
@@ -1648,14 +1673,14 @@ INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 -- Mousse au Chocolat
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Mousse au Chocolat', 'Chocolat', 150, 'grammes'),
-('Mousse au Chocolat', 'Oeuf', 4, 'unités');
+('Mousse au Chocolat', 'Oeuf', 225, 'grammes');
 
 
 -- Cheesecake
 INSERT INTO recette_contient_aliment (rnom, anom, quantite, unite_mesure) VALUES
 ('Cheesecake', 'Fromage frais', 500, 'grammes'),
 ('Cheesecake', 'Sucre', 150, 'grammes'),
-('Cheesecake', 'Oeuf', 3, 'unités'),
+('Cheesecake', 'Oeuf', 175, 'grammes'),
 ('Cheesecake', 'Beurre', 100, 'grammes');
 
 INSERT INTO Recette_utilise_Ustensil (rnom, unom) VALUES
@@ -1776,24 +1801,24 @@ INSERT INTO Utilisateur_cache_SousGroupe (email, sgnom) VALUES
 ('sophie.dubois@email.com', 'Noix'),
 ('sophie.dubois@email.com', 'Basilic');
 
-INSERT INTO Utilisateur_possede_Aliment (email, anom) VALUES
-('lucas.bernard@email.com', 'Tomate'),
-('lucas.lattion@heig-vd.ch', 'Ail'),
-('sophie.dubois@email.com', 'Mozzarella'),
-('calvin.graf@heig-vd.ch', 'Banane'),
-('calvin.graf@heig-vd.ch', 'Noix'),
-('alan.sottile@heig-vd.ch', 'Ail'),
-('lucas.bernard@email.com', 'Poivron'),
-('calvin.graf@heig-vd.ch', 'Saumon d''élevage, cru'),
-('lucas.lattion@heig-vd.ch', 'Mangue'),
-('sophie.dubois@email.com', 'Citron'),
-('lucas.lattion@heig-vd.ch', 'Citron'),
-('antoine.girard@email.com', 'Ail'),
-('alan.sottile@heig-vd.ch', 'Pâte à pizza'),
-('alan.sottile@heig-vd.ch', 'Sauce tomate'),
-('alan.sottile@heig-vd.ch', 'Mozzarella'),
-('alan.sottile@heig-vd.ch', 'Basilic'),
-('alan.sottile@heig-vd.ch', 'Oeuf');
+INSERT INTO Utilisateur_possede_Aliment (email, anom, quantite, unite_mesure) VALUES
+('lucas.bernard@email.com', 'Tomate', 300, 'grammes'),
+('lucas.lattion@heig-vd.ch', 'Ail', 500, 'grammes'),
+('sophie.dubois@email.com', 'Mozzarella', 300, 'grammes'),
+('calvin.graf@heig-vd.ch', 'Banane', 230, 'grammes'),
+('calvin.graf@heig-vd.ch', 'Noix', 430, 'grammes'),
+('alan.sottile@heig-vd.ch', 'Ail', 630, 'grammes'),
+('lucas.bernard@email.com', 'Poivron', 130, 'grammes'),
+('calvin.graf@heig-vd.ch', 'Saumon d''élevage, cru', 230, 'grammes'),
+('lucas.lattion@heig-vd.ch', 'Mangue', 530, 'grammes'),
+('sophie.dubois@email.com', 'Citron', 20, 'grammes'),
+('lucas.lattion@heig-vd.ch', 'Citron', 30, 'grammes'),
+('antoine.girard@email.com', 'Ail', 30, 'grammes'),
+('alan.sottile@heig-vd.ch', 'Pâte à pizza', 50, 'grammes'),
+('alan.sottile@heig-vd.ch', 'Sauce tomate', 30, 'grammes'),
+('alan.sottile@heig-vd.ch', 'Mozzarella', 200, 'grammes'),
+('alan.sottile@heig-vd.ch', 'Basilic', 230, 'grammes'),
+('alan.sottile@heig-vd.ch', 'Oeuf', 30, 'grammes');
 
 INSERT INTO Utilisateur_cache_Recette (email, rnom) VALUES
 ('alan.sottile@heig-vd.ch', 'Poulet rôti au yogourt'),
