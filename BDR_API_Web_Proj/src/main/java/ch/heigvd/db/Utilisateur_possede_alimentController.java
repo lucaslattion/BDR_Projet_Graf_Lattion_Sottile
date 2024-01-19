@@ -30,7 +30,7 @@ public class Utilisateur_possede_alimentController {
 
             int limit = 0;   // Default 0 means all elements
             int offset = 0;  // Default 0 means no skipped elements
-            String email = null;
+            String email = ctx.cookie("user");
             String anom = null;
 
             // Parse JSON from the request body
