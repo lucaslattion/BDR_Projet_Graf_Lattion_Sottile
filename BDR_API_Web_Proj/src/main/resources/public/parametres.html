@@ -266,7 +266,7 @@
         }
 
 
-        function displayAliments(aliment) {
+        function displayAliments(aliments) {
             var select = '<select>';
             aliments.forEach(function(aliment) {
                 select += `<option value="${aliment.anom}">${aliment.anom}</option>`;
@@ -278,9 +278,6 @@
         function displayFridge(utilisateur_possede_aliments) {
             // Sélectionnez la div qui contiendra les éléments
             var listeFrigo = document.querySelector('.liste-frigo');
-
-            // Effacez les éléments existants dans la div
-            listeFrigo.innerHTML = "";
 
             // Parcourez chaque aliment et ajoutez-le à la div
             utilisateur_possede_aliments.forEach(function(utilisateur_possede_aliment) {
@@ -299,11 +296,16 @@
                 quantiteAlimentSpan.textContent = utilisateur_possede_aliment.quantite;
                 alimentDiv.appendChild(quantiteAlimentSpan);
 
+                // Ajoutez l'unité de mesure de l'aliment
+                var unite_mesureAlimentSpan = document.createElement('span');
+                unite_mesureAlimentSpan.classList.add('unite_mesure');
+                unite_mesureAlimentSpan.textContent = utilisateur_possede_aliment.unite_mesure;
+                alimentDiv.appendChild(unite_mesureAlimentSpan);
+
                 // Ajoutez l'élément à la liste
                 listeFrigo.appendChild(alimentDiv);
             });
         }
-
 
 
         function displayRegimes(regimes) {
@@ -358,21 +360,6 @@
                 <span class="aliment">Aliment</span>
                 <span class="quantite">Quantité</span>
                 <span class="unite">Unité</span>
-            </div>
-            <div class="liste-item">
-                <span class="aliment">Pomme</span>
-                <span class="quantite">200</span>
-                <span class="unite">Gramme</span>
-            </div>
-            <div class="liste-item">
-                <span class="aliment">Lait</span>
-                <span class="quantite">2</span>
-                <span class="unite">Litre</span>
-            </div>
-            <div class="liste-item">
-                <span class="aliment">Porc</span>
-                <span class="quantite">120</span>
-                <span class="unite">Gramme</span>
             </div>
         </div>
 
