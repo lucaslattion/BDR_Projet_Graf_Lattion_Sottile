@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Website Title</title>
+    <title>Intelli'Fridge</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,7 +37,7 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        
+
         .recipes-section {
             max-width: 800px;
             margin: 20px auto;
@@ -48,7 +48,7 @@
             max-height: 400px; /* Set a max height for the scrollable area */
             min-height: 400px; /* Set a max height for the scrollable area */
         }
-        
+
         .filter-bar {
             max-width: 800px;
             margin: 20px auto;
@@ -57,7 +57,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             overflow: auto; /* Added this line for scrollability */
         }
-        
+
         .recipe-singular {
             display: flex;
             justify-content: space-between;
@@ -69,16 +69,16 @@
         .recipe-singular div {
             flex: 1;
         }
-        
+
         h2{
             max-width: 800px;
             margin: 20px auto;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        
-    
-        
+
+
+
         .filter-bar {
             display: flex;
             justify-content: space-between;
@@ -88,121 +88,146 @@
             flex: 1;
             margin-right: 10px; /* Ajoute une marge entre les éléments */
         }
-        
+
         #submitButton{
             text-align: right;
         }
-        
+
     </style>
 </head>
+
 <body>
-    <header>
-        <h1>Your Website Title</h1>
-        <div class="header-buttons">
-            <a href="./parametres.html">
+<header>
+    <h1>Intelli'Fridge</h1>
+    <div class="header-buttons">
+        <a href="./parametres.html">
             <button>Profil</button>
-            </a>
-            <a href="./index.html">
+        </a>
+        <a href="login.html">
             <button>Déconnexion</button>
-            </a>
-        </div>
-    </header>
+        </a>
+    </div>
+</header>
+<h2>Recettes</h2>
+<div class="filter-bar">
+    <div class="filter-element">
+        <label for="choixType">Type :</label>
+        <select id="choixType" name="Types">
+        </select>
+    </div>
 
-    <h2>Recettes</h2>
-    <div class="filter-bar">
-    <div class="filter-element">  
-    <label for="choixType">Type :</label>
-    <select id="choixType" name="Types">
-        <option value="dessert">Dessert</option>
-        <option value="salade">Salade</option>
-        <option value="salade">Salade</option>
-        <option value="salade">Salade</option>
-        <option value="salade">Salade</option>
-    </select>
-        </div>
-        
-    <div class="filter-element"> 
-    <label for="Regime">Regime :</label>
-    <select id="choixRegime" name="Regimes">
-        <option value="vegan">Vegan</option>
-        <option value="keto">Keto</option>
-        <option value="salade">Salade</option>
-        <option value="salade">Salade</option>
-        <option value="salade">Salade</option>
-    </select>
-        </div>
-        
-    <div class="filter-element"> 
-    <label for="rangeInput">Calories maximum :</label>
+    <div class="filter-element">
+        <select id="choixRegime" name="Regimes">
+        </select>
+    </div>
+
+    <div class="filter-element">
+        <label for="rangeInput">Calories maximum :</label>
         <span id="selectedValue">0</span>
-    <input type="range" id="rangeInput" name="range" min="0" max="2000" value="0" step="1" oninput="updateValue()">
-    
-    
-
-    <script>
-        function updateValue() {
-            var rangeInput = document.getElementById("rangeInput");
-            var selectedValue = document.getElementById("selectedValue");
-            selectedValue.textContent = rangeInput.value;
-        }
-    </script>
-        </div>
-        
-    <div class="filter-element" id="submitButton"> 
-    <button type="submit">Valider</button>
-        </div>
-    </div>
-    
-    
-    <div class="recipes-section">
-        <div class="recipe-singular">
-            <div><a href="recette.html">Nom de la recette</a></div>
-            <div>Nombre de calories</div>
-            <div>Type</div>
-        </div>
-        <div class="recipe-singular">
-            <div>Nom de la recette</div>
-            <div>Nombre de calories</div>
-            <div>Type</div>
-        </div>
-        <div class="recipe-singular">
-            <div>Nom de la recette</div>
-            <div>Nombre de calories</div>
-            <div>Type</div>
-        </div>
-        <div class="recipe-singular">
-            <div>Nom de la recette</div>
-            <div>Nombre de calories</div>
-            <div>Type</div>
-        </div>
-        <div class="recipe-singular">
-            <div>Nom de la recette</div>
-            <div>Nombre de calories</div>
-            <div>Type</div>
-        </div>
-        <div class="recipe-singular">
-            <div>Nom de la recette</div>
-            <div>Nombre de calories</div>
-            <div>Type</div>
-        </div>
-        <div class="recipe-singular">
-            <div>Nom de la recette</div>
-            <div>Nombre de calories</div>
-            <div>Type</div>
-        </div>
-        <div class="recipe-singular">
-            <div>Nom de la recette</div>
-            <div>Nombre de calories</div>
-            <div>Type</div>
-        </div>
-
+        <input type="range" id="rangeInput" name="range" min="0" max="2000" value="0" step="1" oninput="updateValue()">
     </div>
 
-    <script>
-        function handleButtonClick(buttonName) {
-            alert('You clicked ' + buttonName);
-            // Add your button click logic here
-        }
-    </script>
+    <div class="filter-element" id="submitButton">
+        <button type="submit">Valider</button>
+    </div>
+</div>
+
+
+<div class="recipes-section" id="recipesContainer">
+    <div class="recipe-singular">
+        <div><a href="recette.html">Nom de la recette</a></div>
+        <div>Nombre de calories</div>
+        <div>Type</div>
+    </div>
+</div>
+
+<script>
+    function handleButtonClick(buttonName) {
+        alert('You clicked ' + buttonName);
+        // Add your button click logic here
+    }
+
+    window.onload = function() {
+        fetchTypes();
+        fetchRegimes();
+        fetchRecette();
+    };
+
+    function updateValue() {
+        var rangeInput = document.getElementById("rangeInput");
+        var selectedValue = document.getElementById("selectedValue");
+        selectedValue.textContent = rangeInput.value;
+    }
+
+    function fetchRecette() {
+        // Perform a GET request to /recette
+        fetch('/recette', { credentials: 'include' })
+            .then(response => response.json())
+            .then(data => displayRecette(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function displayRecette(recettes) {
+        var recipesContainer = document.getElementById('recipesContainer');
+
+        // Parcourez les données des recettes et créez des éléments pour chaque recette
+        recettes.forEach(function (recette) {
+            var recipeDiv = document.createElement('div');
+            recipeDiv.classList.add('recipe-singular');
+
+            var nomRecetteDiv = document.createElement('div');
+            nomRecetteDiv.innerHTML = `<a href="recette.html">${recette.rnom}</a>`;
+
+            var caloriesDiv = document.createElement('div');
+            caloriesDiv.textContent = recette.calories;
+
+            var typeDiv = document.createElement('div');
+            typeDiv.textContent = recette.type;
+
+            recipeDiv.appendChild(nomRecetteDiv);
+            recipeDiv.appendChild(caloriesDiv);
+            recipeDiv.appendChild(typeDiv);
+
+            recipesContainer.appendChild(recipeDiv);
+        });
+    }
+
+    function fetchRegimes() {
+        // Perform a GET request to /regimes
+        fetch('/regime', { credentials: 'include' })
+            .then(response => response.json())
+            .then(data => displayRegime(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function displayRegime(regimes) {
+        var select = '<select>';
+        regimes.forEach(function(regime) {
+            select += `<option value="${regime.regnom}">${regime.regnom}</option>`;
+        });
+        select += '</select>';
+
+        document.getElementById('choixRegime').innerHTML = select;
+    }
+
+    function fetchTypes() {
+        // Perform a GET request to /types
+        fetch('/type', { credentials: 'include' })
+            .then(response => response.json())
+            .then(data => displayType(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function displayType(utilisateur_possede_aliments) {
+        var select = '<select>';
+        utilisateur_possede_aliments.forEach(function(utilisateur_possede_aliment) {
+            select += `<option value="${utilisateur_possede_aliment.anom}">${utilisateur_possede_aliment.anom}</option>`;
+        });
+        select += '</select>';
+
+        document.getElementById('choixType').innerHTML = select;
+    }
+
+</script>
 </body>
 </html>

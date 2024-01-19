@@ -28,6 +28,7 @@ public class AuthController {
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
             ctx.cookie("user", rs.getString("email"));
+
             ctx.status(HttpStatus.NO_CONTENT);
             return;
         }
