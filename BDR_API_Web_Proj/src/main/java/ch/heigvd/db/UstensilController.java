@@ -51,7 +51,7 @@ public class UstensilController {
             }
 
             List<Ustensil> ustensilList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM ustensil");
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM ustensil ORDER BY unom ASC");
 
             List<String> conditions = new ArrayList<>();
 

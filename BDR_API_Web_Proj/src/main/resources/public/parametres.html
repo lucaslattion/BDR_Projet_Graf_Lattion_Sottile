@@ -239,6 +239,7 @@
             fetchAliments();
             fetchRegimes();
             fetchFridge();
+            fetchUniteMesure()
         };
 
         function fetchAliments() {
@@ -246,6 +247,14 @@
             fetch('/aliment', { credentials: 'include' })
                 .then(response => response.json())
                 .then(data => displayAliments(data))
+                .catch(error => console.error('Error:', error));
+        }
+
+        function fetchUniteMesure() {
+            // Perform a GET request to /aliment
+            fetch('/uniteMesure', { credentials: 'include' })
+                .then(response => response.json())
+                .then(data => displayUniteMesure(data))
                 .catch(error => console.error('Error:', error));
         }
 
@@ -265,7 +274,6 @@
                 .catch(error => console.error('Error:', error));
         }
 
-
         function displayAliments(aliments) {
             var select = '<select>';
             aliments.forEach(function(aliment) {
@@ -273,6 +281,15 @@
             });
             select += '</select>';
             document.getElementById('liste-aliments').innerHTML = select;
+        }
+
+        function displayUniteMesure(unitesMesures) {
+            var select = '<select>';
+            unitesMesures.forEach(function(uniteMesure) {
+                select += `<option value="${uniteMesure.udmnom}">${uniteMesure.udmnom}</option>`;
+            });
+            select += '</select>';
+            document.getElementById('unite-aliments').innerHTML = select;
         }
 
         function displayFridge(utilisateur_possede_aliments) {
@@ -346,7 +363,7 @@
             <select id="liste-aliments">
             </select>
             <input type="number" id="quantite-aliment" min="1" placeholder="Quantité">
-            <select id="unite-aliment">
+            <select id="unite-aliments">
             </select>
             <button id="btn-ajouter">Ajouter</button>
         </div>

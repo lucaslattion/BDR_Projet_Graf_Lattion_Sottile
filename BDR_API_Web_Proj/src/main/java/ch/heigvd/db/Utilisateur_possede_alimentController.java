@@ -61,7 +61,7 @@ public class Utilisateur_possede_alimentController {
             }
 
             List<Utilisateur_possede_aliment> utilisateur_possede_alimentList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM utilisateur_possede_aliment"); // assuming the table name is 'utilisateur_possede_aliment'
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM utilisateur_possede_aliment ORDER BY anom ASC"); // assuming the table name is 'utilisateur_possede_aliment'
 
             List<String> conditions = new ArrayList<>();
 

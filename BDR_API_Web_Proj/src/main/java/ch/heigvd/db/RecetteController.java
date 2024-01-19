@@ -53,7 +53,7 @@ public class RecetteController {
             }
 
             List<Recette> recetteList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM recette"); // assuming the table name is 'recette'
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM recette ORDER BY rnom ASC"); // assuming the table name is 'recette'
 
             List<String> conditions = new ArrayList<>();
 
