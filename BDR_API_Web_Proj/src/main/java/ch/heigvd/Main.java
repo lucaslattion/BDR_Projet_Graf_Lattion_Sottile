@@ -24,10 +24,6 @@ public class Main {
         String dbUsername = "bdr";
         String dbPassword = "bdr";
 
-
-
-
-
         // Using try-with-resources to ensure proper closure of the app
         try (Javalin app = Javalin.create(config -> {
             config.staticFiles.add("/public"); // Serve static files from 'src/main/resources/public'
@@ -53,6 +49,7 @@ public class Main {
                 RegimeController regimeController = new RegimeController(conn, authController);
                 SousgroupeController sousgroupeController = new SousgroupeController(conn, authController);
                 TypeController typeController = new TypeController(conn, authController);
+                UniteMesureController uniteMesureController = new UniteMesureController(conn, authController);
                 UstensilController ustensilController = new UstensilController(conn, authController);
                 Utilisateur_cache_alimentController utilisateur_cache_alimentController = new Utilisateur_cache_alimentController(conn, authController);
                 Utilisateur_cache_recetteController utilisateur_cache_recetteController = new Utilisateur_cache_recetteController(conn, authController);
@@ -145,6 +142,12 @@ public class Main {
                 app.post("/type", typeController::create);
                 app.put("/type/{tnom}", typeController::update);
                 app.delete("/type/{tnom}", typeController::delete);
+
+                app.get("/uniteMesure", uniteMesureController::getMany);
+                app.post("/uniteMesure/limit", uniteMesureController::getMany);
+                app.post("/uniteMesure", uniteMesureController::create);
+                app.put("/uniteMesure/{udmnom}", uniteMesureController::update);
+                app.delete("/uniteMesure/{udmnom}", uniteMesureController::delete);
 
                 // ustensil routes
                 app.get("/ustensil", ustensilController::getMany);

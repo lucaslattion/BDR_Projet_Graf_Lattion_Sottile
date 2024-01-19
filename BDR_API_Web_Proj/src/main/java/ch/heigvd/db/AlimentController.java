@@ -53,7 +53,7 @@ public class AlimentController {
             }
 
             List<Aliment> alimentList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM aliment"); // assuming the table name is 'aliment'
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM aliment ORDER BY anom ASC"); // assuming the table name is 'aliment'
 
             List<String> conditions = new ArrayList<>();
 

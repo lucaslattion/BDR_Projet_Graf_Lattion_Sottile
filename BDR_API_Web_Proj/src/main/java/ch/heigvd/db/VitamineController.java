@@ -51,7 +51,7 @@ public class VitamineController {
             }
 
             List<Vitamine> vitamineList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM vitamine");
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM vitamine ORDER BY vinom");
 
             List<String> conditions = new ArrayList<>();
 

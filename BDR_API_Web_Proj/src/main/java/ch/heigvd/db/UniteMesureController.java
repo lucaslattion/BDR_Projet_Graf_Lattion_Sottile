@@ -1,30 +1,27 @@
 package ch.heigvd.db;
 
+import ch.heigvd.auth.AuthController;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.javalin.http.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.heigvd.auth.AuthController;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-
-public class RegimeController {
+public class UniteMesureController {
 
     private Connection conn;
     private AuthController authController;
-    public RegimeController(Connection connection, AuthController authController) {
+
+    public UniteMesureController(Connection connection, AuthController authController) {
         conn = connection;
         this.authController = authController;
     }
-
 
     public void getMany(Context ctx) throws SQLException {
 
@@ -32,7 +29,7 @@ public class RegimeController {
 
             int limit = 0;   // Default 0 means all elements
             int offset = 0;  // Default 0 means no skipped elements
-            String regnom = null;
+            String udmnom = null;
 
             // Parse JSON from the request body
             if (ctx.body() != null && !ctx.body().isEmpty()) {
@@ -45,18 +42,18 @@ public class RegimeController {
                 if (requestBody.has("offset")) {
                     offset = requestBody.get("offset").getAsInt();
                 }
-                if (requestBody.has("regnom")) {
-                    regnom = requestBody.get("regnom").getAsString();
+                if (requestBody.has("udmnom")) {
+                    udmnom = requestBody.get("udmnom").getAsString();
                 }
             }
 
-            List<Regime> regimeList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM regime ORDER BY regnom ASC");
+            List<UniteMesure> uniteMesureList = new ArrayList<>();
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM unitedemesure ORDER BY udmnom ASC");
 
             List<String> conditions = new ArrayList<>();
 
-            if (regnom != null) {
-                conditions.add("regnom = ?");
+            if (udmnom != null) {
+                conditions.add("udmnom = ?");
             }
 
             if (!conditions.isEmpty()) {
@@ -74,20 +71,20 @@ public class RegimeController {
             PreparedStatement stmt = conn.prepareStatement(queryBuilder.toString());
 
             int index = 1;
-            if (regnom != null) {
-                stmt.setString(index++, regnom);
+            if (udmnom != null) {
+                stmt.setString(index++, udmnom);
             }
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Regime regime = new Regime();
-                regime.regnom = rs.getString("regnom");;
-                regimeList.add(regime);
+                UniteMesure uniteMesure = new UniteMesure();
+                uniteMesure.udmnom = rs.getString("udmnom");;
+                uniteMesureList.add(uniteMesure);
 
 
             }
 
-            ctx.json(regimeList);
+            ctx.json(uniteMesureList);
             return;
 
         }
@@ -97,16 +94,16 @@ public class RegimeController {
     public void create(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
 
-            Regime newRegime = ctx.bodyValidator(Regime.class)
-                    .check(obj -> obj.regnom != null, "Missing regime name")
+            UniteMesure newUniteMesure = ctx.bodyValidator(UniteMesure.class)
+                    .check(obj -> obj.udmnom != null, "Missing unite mesure name")
                     .get();
 
             try (PreparedStatement insertStmt = conn.prepareStatement(
-                    "INSERT INTO regime (regnom) VALUES (?)")) {
-                insertStmt.setString(1, newRegime.regnom);
+                    "INSERT INTO unitedemesure (udmnom) VALUES (?)")) {
+                insertStmt.setString(1, newUniteMesure.udmnom);
                 insertStmt.executeUpdate();
                 ctx.status(HttpStatus.CREATED);
-                ctx.json(newRegime);
+                ctx.json(newUniteMesure);
                 return;
             } catch (SQLException e) {
                 if (e.getSQLState().equals("23505")) { // Unique violation
@@ -121,15 +118,15 @@ public class RegimeController {
 
     public void update(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
-            String regnom = ctx.pathParam("regnom");
-            Regime updateRegime = ctx.bodyValidator(Regime.class)
-                    .check(obj -> obj.regnom != null, "Missing regime name")
+            String udmnom = ctx.pathParam("udmnom");
+            UniteMesure updateUniteMesure = ctx.bodyValidator(UniteMesure.class)
+                    .check(obj -> obj.udmnom != null, "Missing unite mesure name")
                     .get();
 
             PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE regime SET regnom = ? WHERE regnom = ?");
-            stmt.setString(1, updateRegime.regnom);
-            stmt.setString(2, regnom);
+                    "UPDATE unitedemesure SET udmnom = ? WHERE udmnom = ?");
+            stmt.setString(1, updateUniteMesure.udmnom);
+            stmt.setString(2, udmnom);
 
             int updatedRows = stmt.executeUpdate();
             if (updatedRows == 0) {
@@ -144,10 +141,10 @@ public class RegimeController {
 
     public void delete(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
-            String regnom = ctx.pathParam("regnom");
+            String udmnom = ctx.pathParam("udmnom");
 
-            PreparedStatement stmt = conn.prepareStatement("DELETE FROM regime WHERE regnom = ?");
-            stmt.setString(1, regnom);
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM unitedemesure WHERE udmnom = ?");
+            stmt.setString(1, udmnom);
 
             int deletedRows = stmt.executeUpdate();
             if (deletedRows == 0) {

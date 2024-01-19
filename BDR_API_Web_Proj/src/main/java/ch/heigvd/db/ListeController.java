@@ -53,7 +53,7 @@ public class ListeController {
             }
 
             List<Liste> listeList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM liste"); // assuming the table name is 'liste'
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM liste ORDER BY lnom ASC"); // assuming the table name is 'liste'
 
             List<String> conditions = new ArrayList<>();
 
