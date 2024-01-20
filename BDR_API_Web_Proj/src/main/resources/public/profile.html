@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Profile</title>
+
+        <script>
+            function getContentPage() {
+                // Perform a GET request to /profile
+                fetch('/profile', { credentials: 'include' })
+                    .then(response => response.json())
+                    .then(data => displayContent(data))
+                    .catch(error => console.error('Error:', error));
+                                // Use fetch to load the header.html content
+                                fetch('header.html')
+                    .then(response => response.text())
+                    .then(text => document.getElementById('header').innerHTML = text);
+            }
+        
+            function displayContent(aliments) {
+                var table = '<table><tr><th>Name</th><th>Kcal</th><th>Proteins</th><th>Carbohydrates</th><th>Fats</th><th>Fibres</th><th>Sodium</th><th>Group</th></tr>';
+                aliments.forEach(function(aliment) {
+                    table += `<tr>
+                                <td>${aliment.anom}</td>
+                                <td>${aliment.kcal}</td>
+                                <td>${aliment.proteines}</td>
+                                <td>${aliment.glucides}</td>
+                                <td>${aliment.lipides}</td>
+                                <td>${aliment.fibres}</td>
+                                <td>${aliment.sodium}</td>
+                                <td>${aliment.groupe}</td>
+                                </tr>`;
+                });
+                table += '</table>';
+        
+                document.getElementById('content').innerHTML = table;
+            }
+
+            window.onload = function() {
+                // Check if cookies are present
+                if (document.cookie) {
+                    getContentPage();
+                } else {
+                    showLoginForm();
+                }
+            };
+
+            function submitLoginForm() {
+                var email = document.getElementById('email').value;
+                var password = document.getElementById('password').value;
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/login", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 204) {
+                            // Reloads the page on successful login
+                            window.location.reload();
+                        } else {
+                            // Display the error message below the login form
+                            var errorMessage = document.getElementById('error-message'); // Ensure you have an element with id 'error-message' in your HTML to display the error.
+                            errorMessage.innerText = "Error: " + xhr.statusText;
+                            errorMessage.style.display = 'block';
+                        }
+                    }
+                };
+
+                var data = JSON.stringify({"email": email, "password": password});
+                xhr.send(data);
+
+                return false; // Prevents form from submitting the traditional way
+            }
+        
+        </script>
+
+    </head>
+    <body>
+        <header id="header">
+            <script>
+
+            </script>
+        </header>
+        <div id="content"></div>
+    </body>
+</html>

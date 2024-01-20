@@ -176,6 +176,7 @@ public class Main {
 
                 // utilisateur_possede_aliment routes
                 app.get("/utilisateur_possede_aliment", utilisateur_possede_alimentController::getMany);
+                app.get("/utilisateur_possede_aliment/loggedUser", utilisateur_possede_alimentController::getWithLoggedUser);
                 app.post("/utilisateur_possede_aliment/limit", utilisateur_possede_alimentController::getMany);
                 app.post("/utilisateur_possede_aliment", utilisateur_possede_alimentController::create);
                 app.put("/utilisateur_possede_aliment/{email}/{anom}", utilisateur_possede_alimentController::update);

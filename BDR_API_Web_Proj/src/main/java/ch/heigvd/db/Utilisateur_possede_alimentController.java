@@ -177,4 +177,82 @@ public class Utilisateur_possede_alimentController {
         }
         throw new UnauthorizedResponse();
     }
+
+    public void getWithLoggedUser(Context ctx)  throws SQLException {
+
+        if(authController.validLoggedUser(ctx)){
+
+
+            int limit = 0;   // Default 0 means all elements
+            int offset = 0;  // Default 0 means no skipped elements
+            String email = ctx.cookie("user");
+            String anom = null;
+
+            // Parse JSON from the request body
+            if (ctx.body() != null && !ctx.body().isEmpty()) {
+                JsonObject requestBody = new JsonParser().parse(ctx.body()).getAsJsonObject();
+
+                // Extract parameters from JSON
+                if (requestBody.has("limit")) {
+                    limit = requestBody.get("limit").getAsInt();
+                }
+                if (requestBody.has("offset")) {
+                    offset = requestBody.get("offset").getAsInt();
+                }
+                if (requestBody.has("email")) {
+                    email = requestBody.get("email").getAsString();
+                }
+                if (requestBody.has("anom")) {
+                    anom = requestBody.get("anom").getAsString();
+                }
+            }
+
+            List<Utilisateur_possede_aliment> utilisateur_possede_alimentList = new ArrayList<>();
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM utilisateur_possede_aliment"); // assuming the table name is 'utilisateur_possede_aliment'
+
+            List<String> conditions = new ArrayList<>();
+
+            if (email != null) {
+                conditions.add("email = ?");
+            }
+            if (anom != null) {
+                conditions.add("anom = ?");
+            }
+
+            if (!conditions.isEmpty()) {
+                queryBuilder.append(" WHERE ").append(String.join(" AND ", conditions));
+            }
+
+            if (limit > 0) {
+                // Adding LIMIT and OFFSET to the query
+                queryBuilder.append(" LIMIT ").append(limit);
+                if (offset > 0) {
+                    queryBuilder.append(" OFFSET ").append(offset);
+                }
+            }
+
+            PreparedStatement stmt = conn.prepareStatement(queryBuilder.toString());
+
+            int index = 1;
+            if (email != null) {
+                stmt.setString(index++, email);
+            }
+            if (anom != null) {
+                stmt.setString(index, anom);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Utilisateur_possede_aliment utilisateur_possede_aliment = new Utilisateur_possede_aliment();
+                utilisateur_possede_aliment.email = rs.getString("email");
+                utilisateur_possede_aliment.anom = rs.getString("anom");
+                utilisateur_possede_alimentList.add(utilisateur_possede_aliment);
+            }
+
+            ctx.json(utilisateur_possede_alimentList);
+            return;
+
+        }
+        throw new UnauthorizedResponse();
+    }
 }
