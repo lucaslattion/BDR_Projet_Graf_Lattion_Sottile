@@ -53,7 +53,7 @@ public class SousgroupeController {
             }
 
             List<Sousgroupe> sousgroupeList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM sousgroupe"); // assuming the table name is 'sousgroupe'
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM sousgroupe ORDER BY sgnom ASC"); // assuming the table name is 'sousgroupe'
 
             List<String> conditions = new ArrayList<>();
 

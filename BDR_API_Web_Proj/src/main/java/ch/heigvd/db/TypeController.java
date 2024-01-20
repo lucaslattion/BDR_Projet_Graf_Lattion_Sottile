@@ -51,7 +51,7 @@ public class TypeController {
             }
 
             List<Type> typeList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM type");
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM type ORDER BY tnom ASC");
 
             List<String> conditions = new ArrayList<>();
 

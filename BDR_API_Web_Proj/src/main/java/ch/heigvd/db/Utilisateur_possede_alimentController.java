@@ -30,8 +30,10 @@ public class Utilisateur_possede_alimentController {
 
             int limit = 0;   // Default 0 means all elements
             int offset = 0;  // Default 0 means no skipped elements
-            String email = null;
+            String email = ctx.cookie("user");
             String anom = null;
+            String quantite = null;
+            String unite_mesure = null;
 
             // Parse JSON from the request body
             if (ctx.body() != null && !ctx.body().isEmpty()) {
@@ -50,10 +52,16 @@ public class Utilisateur_possede_alimentController {
                 if (requestBody.has("anom")) {
                     anom = requestBody.get("anom").getAsString();
                 }
+                if (requestBody.has("quantite")) {
+                    email = requestBody.get("quantite").getAsString();
+                }
+                if (requestBody.has("unite_mesure")) {
+                    anom = requestBody.get("unite_mesure").getAsString();
+                }
             }
 
             List<Utilisateur_possede_aliment> utilisateur_possede_alimentList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM utilisateur_possede_aliment"); // assuming the table name is 'utilisateur_possede_aliment'
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM utilisateur_possede_aliment ORDER BY anom ASC"); // assuming the table name is 'utilisateur_possede_aliment'
 
             List<String> conditions = new ArrayList<>();
 
@@ -62,6 +70,12 @@ public class Utilisateur_possede_alimentController {
             }
             if (anom != null) {
                 conditions.add("anom = ?");
+            }
+            if (quantite != null) {
+                conditions.add("quantite = ?");
+            }
+            if (unite_mesure != null) {
+                conditions.add("unite_mesure = ?");
             }
 
             if (!conditions.isEmpty()) {
@@ -85,12 +99,20 @@ public class Utilisateur_possede_alimentController {
             if (anom != null) {
                 stmt.setString(index, anom);
             }
+            if (quantite != null) {
+                stmt.setString(index++, quantite);
+            }
+            if (unite_mesure != null) {
+                stmt.setString(index, unite_mesure);
+            }
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Utilisateur_possede_aliment utilisateur_possede_aliment = new Utilisateur_possede_aliment();
                 utilisateur_possede_aliment.email = rs.getString("email");
                 utilisateur_possede_aliment.anom = rs.getString("anom");
+                utilisateur_possede_aliment.quantite = rs.getString("quantite");
+                utilisateur_possede_aliment.unite_mesure = rs.getString("unite_mesure");
                 utilisateur_possede_alimentList.add(utilisateur_possede_aliment);
             }
 
