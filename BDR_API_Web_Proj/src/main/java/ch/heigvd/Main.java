@@ -183,14 +183,14 @@ public class Main {
                 app.post("/utilisateur_possede_aliment/limit", utilisateur_possede_alimentController::getMany);
                 app.post("/utilisateur_possede_aliment", utilisateur_possede_alimentController::create);
                 app.put("/utilisateur_possede_aliment/{email}/{anom}", utilisateur_possede_alimentController::update);
-                app.delete("/utilisateur_possede_aliment/{email}/{anom}", utilisateur_possede_alimentController::delete);
+                app.delete("/utilisateur_possede_aliment/{anom}", utilisateur_possede_alimentController::delete);
 
                 // Utilisateur_suit_regime routes
                 app.get("/utilisateur_suit_regime", utilisateur_suit_regimeController::getMany);
                 app.post("/utilisateur_suit_regime/limit", utilisateur_suit_regimeController::getMany);
-                app.post("/utilisateur_suit_regime", utilisateur_suit_regimeController::create);
+                app.post("/utilisateur_suit_regime/{regnom}", utilisateur_suit_regimeController::create);
                 app.put("/utilisateur_suit_regime/{email}/{regnom}", utilisateur_suit_regimeController::update);
-                app.delete("/utilisateur_suit_regime/{email}/{regnom}", utilisateur_suit_regimeController::delete);
+                app.delete("/utilisateur_suit_regime/{regnom}", utilisateur_suit_regimeController::delete);
 
                 // Vitamine routes
                 app.get("/vitamine", vitamineController::getMany);

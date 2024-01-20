@@ -3,14 +3,12 @@
 <head>
     <title>Page Paramètre</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
         }
-
         .panel {
             background-color: white;
             padding: 20px;
@@ -26,7 +24,6 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             align-items: center;
         }
-
         input[type="text"], input[type="number"], select {
             margin: 10px 0;
             padding: 10px;
@@ -34,7 +31,6 @@
             border-radius: 4px;
             width: 100%;
         }
-
         button {
             padding: 10px 20px;
             background-color: #007bff;
@@ -44,76 +40,64 @@
             cursor: pointer;
             width: 100%;
         }
-
         button:hover {
             background-color: #0056b3;
         }
-
+        .liste-item-selected {
+            background-color: #007bff;
+            color: white;
+        }
         .liste-frigo {
             width: 100%;
             flex-direction: column;
             margin-top: 10px;
         }
-
         .liste-entete, .liste-item {
             display: flex;
             justify-content: space-between;
             width: 100%;
         }
-
+        .liste-item {
+            cursor: pointer;
+        }
         .aliment, .quantite, .unite {
             flex: 1;
             text-align: left;
             justify-content: center;
         }
-
-        /* Appliquer une marge à droite sur 'aliment' et 'quantite' pour créer l'espacement */
         .aliment, .quantite {
             margin-right: 10px;
         }
-
         .quantite {
             text-align: center;
         }
-
         .unite {
             text-align: right;
         }
-
         .quantite-unite, .ajout-container, .supprimer-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
-
         .ajout-container > select, .ajout-container > input, .ajout-container > button {
             flex: 1;
             margin-right: 10px;
         }
-
         .ajout-container > button {
             max-width: 100px;
         }
-
         .supprimer-container > button {
             width: 100%;
         }
-
-        .liste-item-selected {
-            background-color: #f0f0f0;
-        }
-
         .regime-content {
             display: flex;
             justify-content: space-between;
         }
-
         .liste-regimes, .gestion-aliments {
             flex: 1;
-            margin-right: 10px; /* Espacement entre les deux sections */
+            margin-right: 10px;
         }
-
         header {
             background-color: #333;
             color: #fff;
@@ -122,16 +106,13 @@
             justify-content: space-between;
             align-items: center;
         }
-
         h1 {
             margin: 0;
         }
-
         .header-buttons {
             display: flex;
             gap: 10px;
         }
-
         button {
             padding: 8px 16px;
             background-color: #4CAF50;
@@ -140,25 +121,22 @@
             border-radius: 4px;
             cursor: pointer;
         }
-
         .recipes-section {
             max-width: 800px;
             margin: 20px auto;
             padding: 20px;
             background-color: #f4f4f4;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow: auto; /* Added this line for scrollability */
+            overflow: auto;
         }
-
         .filter-bar {
             max-width: 800px;
             margin: 20px auto;
             padding: 20px;
             background-color: #f4f4f4;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow: auto; /* Added this line for scrollability */
+            overflow: auto;
         }
-
         .recipe-singular {
             display: flex;
             justify-content: space-between;
@@ -166,22 +144,17 @@
             padding: 10px;
             margin: 10px;
         }
-
         .recipe-singular div {
             flex: 1;
         }
-
-
         .filter-bar {
             display: flex;
             justify-content: space-between;
         }
-
         .filter-element {
             flex: 1;
-            margin-right: 10px; /* Ajoute une marge entre les éléments */
+            margin-right: 10px;
         }
-
         .recipe-title {
             display: flex;
             justify-content: space-between;
@@ -190,159 +163,70 @@
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
         #submitButton{
             text-align: right;
         }
-
         .aliments-ustensils-section{
             width: 200px;
             background-color: skyblue;
         }
-
         .recipe-title {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
         .recipe-title p, .recipe-title label, .recipe-title select {
             margin: 0;
         }
-
-
         .container {
             display: flex;
             justify-content: space-between;
         }
-
         .aliments-ustensils-section, .composants {
-            width: 48%; /* Ajustez la largeur selon vos préférences */
+            width: 48%;
         }
-
         .aliments, .ustensils, .composants {
-            border: 1px solid #ccc; /* Juste pour la décoration, vous pouvez ajuster ou supprimer */
-            padding: 10px; /* Juste pour la décoration, vous pouvez ajuster ou supprimer */
+            border: 1px solid #ccc;
+            padding: 10px;
         }
-
         .ingredient, .quantite, .ustensil {
             margin: 0;
         }
-
         .instructions p {
             word-wrap: break-word;
         }
+        .checkbox-aliment {
+            margin-right: 10px;
+        }
+        /* Ajoutez des styles pour les en-têtes */
+        .liste-entete span {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Styles pour aligner le contenu de chaque colonne */
+        .liste-item span {
+            flex: 1;
+            text-align: center;
+        }
+
+        /* Ajoutez une classe pour le container de la checkbox */
+        .checkbox-container {
+            flex: 0 0 40px; /* ajustez la largeur selon vos besoins */
+            text-align: center;
+        }
+
+        /* Ajustez la largeur de la première colonne (checkbox) dans l'en-tête */
+        .liste-entete span:first-child {
+            flex: 0 0 40px; /* doit correspondre à la largeur du container de la checkbox */
+        }
 
     </style>
-    <script>
-        window.onload = function() {
-            fetchAliments();
-            fetchRegimes();
-            fetchFridge();
-            fetchUniteMesure()
-        };
-
-        function fetchAliments() {
-            // Perform a GET request to /aliment
-            fetch('/aliment', { credentials: 'include' })
-                .then(response => response.json())
-                .then(data => displayAliments(data))
-                .catch(error => console.error('Error:', error));
-        }
-
-        function fetchUniteMesure() {
-            // Perform a GET request to /aliment
-            fetch('/uniteMesure', { credentials: 'include' })
-                .then(response => response.json())
-                .then(data => displayUniteMesure(data))
-                .catch(error => console.error('Error:', error));
-        }
-
-        function fetchFridge() {
-            // Perform a GET request to /aliment
-            fetch('/utilisateur_possede_aliment', { credentials: 'include' })
-                .then(response => response.json())
-                .then(data => displayFridge(data))
-                .catch(error => console.error('Error:', error));
-        }
-
-        function fetchRegimes() {
-            // Perform a GET request to /aliment
-            fetch('/regime', { credentials: 'include' })
-                .then(response => response.json())
-                .then(data => displayRegimes(data))
-                .catch(error => console.error('Error:', error));
-        }
-
-        function displayAliments(aliments) {
-            var select = '<select>';
-            aliments.forEach(function(aliment) {
-                select += `<option value="${aliment.anom}">${aliment.anom}</option>`;
-            });
-            select += '</select>';
-            document.getElementById('liste-aliments').innerHTML = select;
-        }
-
-        function displayUniteMesure(unitesMesures) {
-            var select = '<select>';
-            unitesMesures.forEach(function(uniteMesure) {
-                select += `<option value="${uniteMesure.udmnom}">${uniteMesure.udmnom}</option>`;
-            });
-            select += '</select>';
-            document.getElementById('unite-aliments').innerHTML = select;
-        }
-
-        function displayFridge(utilisateur_possede_aliments) {
-            // Sélectionnez la div qui contiendra les éléments
-            var listeFrigo = document.querySelector('.liste-frigo');
-
-            // Parcourez chaque aliment et ajoutez-le à la div
-            utilisateur_possede_aliments.forEach(function(utilisateur_possede_aliment) {
-                var alimentDiv = document.createElement('div');
-                alimentDiv.classList.add('liste-item');
-
-                // Ajoutez le nom de l'aliment
-                var nomAlimentSpan = document.createElement('span');
-                nomAlimentSpan.classList.add('aliment');
-                nomAlimentSpan.textContent = utilisateur_possede_aliment.anom;
-                alimentDiv.appendChild(nomAlimentSpan);
-
-                // Ajoutez la quantité de l'aliment
-                var quantiteAlimentSpan = document.createElement('span');
-                quantiteAlimentSpan.classList.add('quantite');
-                quantiteAlimentSpan.textContent = utilisateur_possede_aliment.quantite;
-                alimentDiv.appendChild(quantiteAlimentSpan);
-
-                // Ajoutez l'unité de mesure de l'aliment
-                var unite_mesureAlimentSpan = document.createElement('span');
-                unite_mesureAlimentSpan.classList.add('unite_mesure');
-                unite_mesureAlimentSpan.textContent = utilisateur_possede_aliment.unite_mesure;
-                alimentDiv.appendChild(unite_mesureAlimentSpan);
-
-                // Ajoutez l'élément à la liste
-                listeFrigo.appendChild(alimentDiv);
-            });
-        }
-
-
-        function displayRegimes(regimes) {
-            var checkboxes = '';
-            regimes.forEach(function(regime) {
-                checkboxes += `<input type="checkbox" id="${regime.regnom}" value="${regime.regnom}">
-                      <label for="${regime.regnom}">${regime.regnom}</label><br>`;
-            });
-            document.getElementById('liste-regimes').innerHTML = checkboxes;
-        }
-
-
-
-    </script>
-
 </head>
 <body>
-
 <header>
-    <h1>Your Website Title</h1>
+    <h1>Intelli'Fridge</h1>
     <div class="header-buttons">
         <a href="./parametres.html">
             <button>Profil</button>
@@ -354,17 +238,12 @@
 </header>
 
 <div id="container">
-    <!-- Panel Frigo -->
-
     <div id="panel-frigo" class="panel">
         <h2>Mon frigo</h2>
-
         <div class="ajout-container">
-            <select id="liste-aliments">
-            </select>
+            <select id="liste-aliments"></select>
             <input type="number" id="quantite-aliment" min="1" placeholder="Quantité">
-            <select id="unite-aliments">
-            </select>
+            <select id="unite-aliments"></select>
             <button id="btn-ajouter">Ajouter</button>
         </div>
 
@@ -379,43 +258,255 @@
                 <span class="unite">Unité</span>
             </div>
         </div>
-
-
     </div>
 
-    <!-- Panel Régime -->
     <div id="panel-regime" class="panel">
-
         <div class="regime-content">
-            <div id="liste-regimes">
-
-            </div>
-
-            <!-- Sélection et transfert d'aliments -->
+            <div id="liste-regimes"></div>
             <div class="gestion-aliments">
                 <h3>Aliments disponibles</h3>
                 <select id="aliments-disponibles">
                     <option value="Pomme">Pomme</option>
                     <option value="Banane">Banane</option>
-                    <!-- Ajoutez d'autres aliments disponibles -->
                 </select>
                 <button id="ajouter-aliment">Masquer aliment</button>
                 <h3>Aliments masquées</h3>
-                <select id="aliments-caches">
-                    <!-- Les aliments cachés s'afficheront ici -->
-                </select>
+                <select id="aliments-caches"></select>
                 <button id="retirer-aliment">Réafficher aliment</button>
             </div>
         </div>
-
-        <!-- Panel Vide 2 -->
-        <div id="panel-vide2" class="panel">
-            <h2>Panel Vide 2</h2>
-
-        </div>
     </div>
 
+    <div id="panel-vide2" class="panel">
+        <h2>Panel Vide 2</h2>
+    </div>
 </div>
-<div id="content"></div>
+
+<script>
+    window.onload = function() {
+        fetchAliments();
+        fetchRegimesSuivis();
+        fetchFridge();
+        fetchUniteMesure();
+        fetchUtilisateurCacheAliment();
+        document.getElementById('btn-ajouter').addEventListener('click', ajouterAlimentAuFrigo);
+        document.getElementById('btn-supprimer').addEventListener('click', supprimerAlimentDuFrigo);
+    };
+
+    let regimesSuivis = [];
+
+    function fetchRegimesSuivis() {
+        fetch('/utilisateur_suit_regime', { credentials: 'include' })
+            .then(response => response.json())
+            .then(data => {
+                regimesSuivis = data.map(item => item.regnom); // Assurez-vous que 'regnom' est le nom correct de la propriété
+                fetchRegimes(); // Appelle fetchRegimes après avoir récupéré les données
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function fetchAliments() {
+        fetch('/aliment', { credentials: 'include' })
+            .then(response => response.json())
+            .then(data => displayAliments(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function fetchUniteMesure() {
+        fetch('/uniteMesure', { credentials: 'include' })
+            .then(response => response.json())
+            .then(data => displayUniteMesure(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function fetchUtilisateurCacheAliment() {
+        fetch('/utilisateur_cache_aliment', { credentials: 'include' })
+            .then(response => response.json())
+            .then(data => displayUtilisateurCacheAliment(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function fetchFridge() {
+        fetch('/utilisateur_possede_aliment', { credentials: 'include' })
+            .then(response => response.json())
+            .then(data => displayFridge(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function fetchRegimes() {
+        fetch('/regime', { credentials: 'include' })
+            .then(response => response.json())
+            .then(data => displayRegimes(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+
+    function displayAliments(aliments) {
+        var select = '<select>';
+        aliments.forEach(function(aliment) {
+            select += `<option value="${aliment.anom}">${aliment.anom}</option>`;
+        });
+        select += '</select>';
+        document.getElementById('liste-aliments').innerHTML = select;
+    }
+
+    function displayUniteMesure(unitesMesures) {
+        var select = '<select>';
+        unitesMesures.forEach(function(uniteMesure) {
+            select += `<option value="${uniteMesure.udmnom}">${uniteMesure.udmnom}</option>`;
+        });
+        select += '</select>';
+        document.getElementById('unite-aliments').innerHTML = select;
+    }
+
+    function displayUtilisateurCacheAliment(uitlisateur_cache_aliments) {
+        var select = '<select>';
+        uitlisateur_cache_aliments.forEach(function(uitlisateur_cache_aliment) {
+            select += `<option value="${uitlisateur_cache_aliment.anom}">${uitlisateur_cache_aliment.anom}</option>`;
+        });
+        select += '</select>';
+        document.getElementById('aliments-caches').innerHTML = select;
+    }
+
+    function displayFridge(utilisateur_possede_aliments) {
+        var listeFrigo = document.querySelector('.liste-frigo');
+        listeFrigo.innerHTML = '<div class="liste-entete">' +
+            '<span></span>' +  // Pour aligner avec les checkboxes
+            '<span class="aliment">Aliment</span>' +
+            '<span class="quantite">Quantité</span>' +
+            '<span class="unite">Unité</span>' +
+            '</div>';
+
+        utilisateur_possede_aliments.forEach(function(utilisateur_possede_aliment) {
+            var alimentDiv = document.createElement('div');
+            alimentDiv.classList.add('liste-item');
+
+            var checkboxContainer = document.createElement('div');
+            checkboxContainer.classList.add('checkbox-container');
+
+            var checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.classList.add('checkbox-aliment');
+            checkbox.value = utilisateur_possede_aliment.anom;
+
+            checkboxContainer.appendChild(checkbox);
+            alimentDiv.appendChild(checkboxContainer);
+
+            var nomAlimentSpan = document.createElement('span');
+            nomAlimentSpan.textContent = utilisateur_possede_aliment.anom;
+            alimentDiv.appendChild(nomAlimentSpan);
+
+            var quantiteAlimentSpan = document.createElement('span');
+            quantiteAlimentSpan.textContent = utilisateur_possede_aliment.quantite;
+            alimentDiv.appendChild(quantiteAlimentSpan);
+
+            var uniteMesureAlimentSpan = document.createElement('span');
+            uniteMesureAlimentSpan.textContent = utilisateur_possede_aliment.unite_mesure;
+            alimentDiv.appendChild(uniteMesureAlimentSpan);
+
+            listeFrigo.appendChild(alimentDiv);
+        });
+    }
+
+    function displayRegimes(regimes) {
+        var checkboxesHTML = '';
+        regimes.forEach(function(regime) {
+            var checked = regimesSuivis.includes(regime.regnom) ? 'checked' : '';
+            checkboxesHTML += `<input type="checkbox" id="${regime.regnom}" value="${regime.regnom}" ${checked} onchange="handleRegimeChange(event)">` +
+                `<label for="${regime.regnom}">${regime.regnom}</label><br>`;
+        });
+        document.getElementById('liste-regimes').innerHTML = checkboxesHTML;
+    }
+
+
+
+    function handleRegimeChange(event) {
+        var regnom = event.target.value; // Récupérer le regnom de la checkbox
+
+        if (event.target.checked) {
+            // Ajouter le régime à la liste des régimes suivis par l'utilisateur
+            fetch(`/utilisateur_suit_regime/${regnom}`, {
+                method: 'POST',
+                credentials: 'include'
+            }).then(response => {
+                if (response.ok) {
+                    console.log(`Régime ${regnom} ajouté avec succès`);
+                } else {
+                    console.error(`Erreur lors de l'ajout du régime ${regnom}`);
+                }
+            });
+        } else {
+            // Supprimer le régime de la liste des régimes suivis par l'utilisateur
+            fetch(`/utilisateur_suit_regime/${regnom}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            }).then(response => {
+                if (response.ok) {
+                    console.log(`Régime ${regnom} supprimé avec succès`);
+                } else {
+                    console.error(`Erreur lors de la suppression du régime ${regnom}`);
+                }
+            });
+        }
+    }
+
+
+
+
+    function ajouterAlimentAuFrigo() {
+        const alimentSelectionne = document.getElementById('liste-aliments').value;
+        const quantite = document.getElementById('quantite-aliment').value;
+        const uniteMesure = document.getElementById('unite-aliments').value;
+
+        const data = {
+            anom: alimentSelectionne,
+            quantite: quantite,
+            unite_mesure: uniteMesure
+        };
+
+        fetch('/utilisateur_possede_aliment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Succès:', data);
+                fetchFridge();
+            })
+            .catch((error) => {
+                console.error('Erreur:', error);
+            });
+    }
+
+    function supprimerAlimentDuFrigo() {
+
+        // Récupérez toutes les checkboxes qui sont cochées
+        const checkedBoxes = document.querySelectorAll('.liste-frigo input[type="checkbox"]:checked');
+
+        // Utilisez Array.from pour convertir NodeList en Array pour faciliter le traitement
+        Array.from(checkedBoxes).forEach(checkbox => {
+            // Envoyez une requête DELETE pour chaque aliment coché
+            fetch(`/utilisateur_possede_aliment/${checkbox.value}`, { // Utilisez la valeur de la checkbox (nom de l'aliment)
+                method: 'DELETE',
+                credentials: 'include'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Aliment supprimé avec succès');
+                        checkbox.parentElement.remove(); // Supprimez l'élément de l'interface utilisateur
+                    } else {
+                        console.error('Erreur lors de la suppression de l\'aliment');
+                    }
+                })
+                .catch(error => console.error('Erreur:', error));
+        });
+        fetchFridge();
+    }
+
+</script>
 </body>
 </html>

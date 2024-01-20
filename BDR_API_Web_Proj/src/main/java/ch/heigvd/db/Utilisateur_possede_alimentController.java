@@ -61,7 +61,7 @@ public class Utilisateur_possede_alimentController {
             }
 
             List<Utilisateur_possede_aliment> utilisateur_possede_alimentList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM utilisateur_possede_aliment ORDER BY anom ASC"); // assuming the table name is 'utilisateur_possede_aliment'
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM utilisateur_possede_aliment"); // assuming the table name is 'utilisateur_possede_aliment'
 
             List<String> conditions = new ArrayList<>();
 
@@ -81,6 +81,8 @@ public class Utilisateur_possede_alimentController {
             if (!conditions.isEmpty()) {
                 queryBuilder.append(" WHERE ").append(String.join(" AND ", conditions));
             }
+
+            queryBuilder.append(" ORDER BY anom ASC");
 
             if (limit > 0) {
                 // Adding LIMIT and OFFSET to the query
@@ -111,7 +113,7 @@ public class Utilisateur_possede_alimentController {
                 Utilisateur_possede_aliment utilisateur_possede_aliment = new Utilisateur_possede_aliment();
                 utilisateur_possede_aliment.email = rs.getString("email");
                 utilisateur_possede_aliment.anom = rs.getString("anom");
-                utilisateur_possede_aliment.quantite = rs.getString("quantite");
+                utilisateur_possede_aliment.quantite = rs.getInt("quantite");
                 utilisateur_possede_aliment.unite_mesure = rs.getString("unite_mesure");
                 utilisateur_possede_alimentList.add(utilisateur_possede_aliment);
             }
@@ -127,15 +129,20 @@ public class Utilisateur_possede_alimentController {
         if(authController.validLoggedUser(ctx)){
 
             Utilisateur_possede_aliment newUtilisateur_possede_aliment = ctx.bodyValidator(Utilisateur_possede_aliment.class)
-                    .check(obj -> obj.email != null, "Missing email")
                     .check(obj -> obj.anom != null, "Missing anom")
+                    .check(obj -> obj.quantite != 0, "Missing quantite")
+                    .check(obj -> obj.unite_mesure != null, "Missing unite of measure")
                     .get();
 
+            newUtilisateur_possede_aliment.email = ctx.cookie("user");
+
             try (PreparedStatement insertStmt = conn.prepareStatement(
-                    "INSERT INTO utilisateur_possede_aliment (email, anom) VALUES (?, ?)")) {
+                    "INSERT INTO utilisateur_possede_aliment (email, anom, quantite, unite_mesure) VALUES (?, ?, ?, ?)")) {
 
                 insertStmt.setString(1, newUtilisateur_possede_aliment.email);
                 insertStmt.setString(2, newUtilisateur_possede_aliment.anom);
+                insertStmt.setInt(3, newUtilisateur_possede_aliment.quantite);
+                insertStmt.setString(4, newUtilisateur_possede_aliment.unite_mesure);
 
                 insertStmt.executeUpdate();
                 ctx.status(HttpStatus.CREATED);
@@ -182,7 +189,7 @@ public class Utilisateur_possede_alimentController {
 
     public void delete(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
-            String email = ctx.pathParam("email");
+            String email = ctx.cookie("user");
 			String anom = ctx.pathParam("anom");
 
             PreparedStatement stmt = conn.prepareStatement("DELETE FROM utilisateur_possede_aliment WHERE email = ? AND anom = ?");
