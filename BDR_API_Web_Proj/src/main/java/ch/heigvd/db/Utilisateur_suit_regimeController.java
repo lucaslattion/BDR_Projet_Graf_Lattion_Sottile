@@ -30,7 +30,7 @@ public class Utilisateur_suit_regimeController {
 
             int limit = 0;   // Default 0 means all elements
             int offset = 0;  // Default 0 means no skipped elements
-            String email = null;
+            String email = ctx.cookie("user");
             String regnom = null;
 
             // Parse JSON from the request body

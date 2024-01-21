@@ -25,12 +25,10 @@ public class Utilisateur_cache_alimentController {
         this.authController = authController;
     }
     public void getMany(Context ctx) throws SQLException {
-
-        if(authController.validLoggedUser(ctx)){
-
+        if (authController.validLoggedUser(ctx)) {
             int limit = 0;   // Default 0 means all elements
             int offset = 0;  // Default 0 means no skipped elements
-            String email = null;
+            String email = ctx.cookie("user");
             String anom = null;
 
             // Parse JSON from the request body
@@ -53,7 +51,7 @@ public class Utilisateur_cache_alimentController {
             }
 
             List<Utilisateur_cache_aliment> utilisateur_cache_alimentList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM utilisateur_cache_aliment"); // assuming the table name is 'utilisateur_cache_aliment'
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM utilisateur_cache_aliment");
 
             List<String> conditions = new ArrayList<>();
 
@@ -83,7 +81,7 @@ public class Utilisateur_cache_alimentController {
                 stmt.setString(index++, email);
             }
             if (anom != null) {
-                stmt.setString(index, anom);
+                stmt.setString(index++, anom); // Changed index to index++
             }
 
             ResultSet rs = stmt.executeQuery();
@@ -96,10 +94,10 @@ public class Utilisateur_cache_alimentController {
 
             ctx.json(utilisateur_cache_alimentList);
             return;
-
         }
         throw new UnauthorizedResponse();
     }
+
 
     public void create(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
