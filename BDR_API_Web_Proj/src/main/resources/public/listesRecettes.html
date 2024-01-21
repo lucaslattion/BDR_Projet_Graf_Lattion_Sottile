@@ -84,6 +84,14 @@
             justify-content: space-between;
         }
 
+        #titre {
+            color: white;
+        }
+
+        #titre {
+            color: white;
+        }
+
         .filter-element {
             flex: 1;
             margin-right: 10px; /* Ajoute une marge entre les éléments */
@@ -98,12 +106,12 @@
 
 <body>
 <header>
-    <h1>Intelli'Fridge</h1>
+    <h1><a id="titre" href="listesRecettes.html">Intelli'Fridge</a></h1>
     <div class="header-buttons">
         <a href="./parametres.html">
             <button>Profil</button>
         </a>
-        <a href="login.html">
+        <a href="./login.html">
             <button>Déconnexion</button>
         </a>
     </div>
@@ -111,13 +119,14 @@
 <h2>Recettes</h2>
 <div class="filter-bar">
     <div class="filter-element">
-        <label for="choixType">Type :</label>
-        <select id="choixType" name="Types">
+        <label for="liste-types">Type :</label>
+        <select id="liste-types"></select>
         </select>
     </div>
 
     <div class="filter-element">
-        <select id="choixRegime" name="Regimes">
+        <label for="choixRegime">Regime :</label>
+        <select id="choixRegime">
         </select>
     </div>
 
@@ -220,14 +229,13 @@
             .catch(error => console.error('Error:', error));
     }
 
-    function displayType(utilisateur_possede_aliments) {
+    function displayType(types) {
         var select = '<select>';
-        utilisateur_possede_aliments.forEach(function(utilisateur_possede_aliment) {
-            select += `<option value="${utilisateur_possede_aliment.anom}">${utilisateur_possede_aliment.anom}</option>`;
+        types.forEach(function(type) {
+            select += `<option value="${type.tnom}">${type.tnom}</option>`;
         });
         select += '</select>';
-
-        document.getElementById('choixType').innerHTML = select;
+        document.getElementById('liste-types').innerHTML = select;
     }
 
 </script>

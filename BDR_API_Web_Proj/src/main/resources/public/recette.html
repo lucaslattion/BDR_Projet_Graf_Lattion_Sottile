@@ -104,6 +104,10 @@
         a{
             color: white;
         }
+
+        a:visited {
+            color: white;
+        }
         
     </style>
     <script>
@@ -153,26 +157,6 @@
                 console.error(error.message);
             }
         }
-
-        /*
-        async function addRecetteToList(listName, newRecette) {
-            try {
-                const response = await fetch(`/liste_contient_recette/${listName}/${newRecette}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(newRecette),
-                });
-            } catch (error) {
-                console.error(error.message);
-            }
-        }
-
-*/
-
-
-
 
 
         function displayLists(listes) {
@@ -244,14 +228,7 @@
             vitamineCContainer.innerHTML = `<p>Vitamine C: ${recetteInformations.vitamineC} g</p>`;
             vitamineDContainer.innerHTML = `<p>Vitamine D: ${recetteInformations.vitamineD} g</p>`;
             vitamineEContainer.innerHTML = `<p>Vitamine E: ${recetteInformations.vitamineE} g</p>`;
-// Ajoutez d'autres conteneurs pour les autres vitamines
 
-
-
-
-
-
-            // Afficher tous les ustensils dans le conteneur approprié
             ustensilsContainer.innerHTML = "<h3>Ustensils utilisés</h3>";
 
             if (ustensilsUsed.length > 0) {
@@ -285,24 +262,8 @@
             // Ajoutez d'autres détails de la recette au besoin
         }
 
-/*
-        function addToList() {
-            const selectedListe = document.getElementById('liste-liste').value;
-            const recipeName = getQueryParam('recette');
-
-            addRecetteToList(selectedListe, recipeName);
-        }
-
-        // Ajoutez un gestionnaire d'événements au bouton
-        document.getElementById('ajouter-bouton').addEventListener('click', addToList);
-
-*/
-        // Appelez la fonction pour afficher les détails de la recette au chargement de la page
         window.onload = displayRecetteDetails();
         window.onload = fetchListes();
-
-
-
 
     </script>
 </head>
