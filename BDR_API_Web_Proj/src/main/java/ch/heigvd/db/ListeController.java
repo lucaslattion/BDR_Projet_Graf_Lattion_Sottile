@@ -31,7 +31,7 @@ public class ListeController {
             int limit = 0;   // Default 0 means all elements
             int offset = 0;  // Default 0 means no skipped elements
             String lnom = null;
-            String email = null;
+            String email = ctx.cookie("user");
 
             // Parse JSON from the request body
             if (ctx.body() != null && !ctx.body().isEmpty()) {

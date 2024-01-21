@@ -114,6 +114,7 @@ public class Main {
                 app.post("/recette_utilise_ustensil", recette_utilise_ustensilController::create);
                 app.put("/recette_utilise_ustensil/{rnom}/{unom}", recette_utilise_ustensilController::update);
                 app.delete("/recette_utilise_ustensil/{rnom}/{unom}", recette_utilise_ustensilController::delete);
+                app.get("/recette_utilise_ustensil/{rnom}", recette_utilise_ustensilController::getMany);
 
                 // recette routes
                 app.get("/recette", recetteController::getMany);
@@ -121,6 +122,8 @@ public class Main {
                 app.post("/recette", recetteController::create);
                 app.put("/recette/{rnom}", recetteController::update);
                 app.delete("/recette/{rnom}", recetteController::delete);
+                app.get("/recette/{rnom}", recetteController::getOne);
+                app.get("/recette/getInfos/{rnom}", recetteController::getInformations);
 
                 // regime routes
                 app.get("/regime", regimeController::getMany);
