@@ -107,6 +107,76 @@ public class AlimentController {
         throw new UnauthorizedResponse();
     }
 
+    public void getAvailable(Context ctx) throws SQLException {
+
+        if(authController.validLoggedUser(ctx)){
+
+            int limit = 0;   // Default 0 means all elements
+            int offset = 0;  // Default 0 means no skipped elements
+            String email = ctx.cookie("user");
+            String anom = null;
+            String groupe = null;
+
+            // Parse JSON from the request body
+            if (ctx.body() != null && !ctx.body().isEmpty()) {
+                JsonObject requestBody = new JsonParser().parse(ctx.body()).getAsJsonObject();
+
+                // Extract parameters from JSON
+                if (requestBody.has("limit")) {
+                    limit = requestBody.get("limit").getAsInt();
+                }
+                if (requestBody.has("offset")) {
+                    offset = requestBody.get("offset").getAsInt();
+                }
+                if (requestBody.has("anom")) {
+                    anom = requestBody.get("anom").getAsString();
+                }
+                if (requestBody.has("groupe")) {
+                    groupe = requestBody.get("groupe").getAsString();
+                }
+            }
+
+            List<Aliment> alimentList = new ArrayList<>();
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM aliment WHERE NOT EXISTS" +
+                    " ( SELECT 1 FROM utilisateur_cache_aliment WHERE" +
+                    " utilisateur_cache_aliment.anom = aliment.anom " +
+                    "AND utilisateur_cache_aliment.email = 'calvin.graf@heig-vd.ch'\n" +
+                    ")");
+
+            queryBuilder.append(" ORDER BY anom ASC");
+
+
+            PreparedStatement stmt = conn.prepareStatement(queryBuilder.toString());
+
+            int index = 1;
+            if (anom != null) {
+                stmt.setString(index++, anom);
+            }
+            if (groupe != null) {
+                stmt.setString(index, groupe);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Aliment aliment = new Aliment();
+                aliment.anom = rs.getString("anom");
+                aliment.kcal = rs.getInt("kcal");
+                aliment.proteines = rs.getDouble("proteines");
+                aliment.glucides = rs.getDouble("glucides");
+                aliment.lipides = rs.getDouble("lipides");
+                aliment.fibres = rs.getDouble("fibres");
+                aliment.sodium = rs.getDouble("sodium");
+                aliment.groupe = rs.getString("groupe");
+                alimentList.add(aliment);
+            }
+
+            ctx.json(alimentList);
+            return;
+
+        }
+        throw new UnauthorizedResponse();
+    }
+
     public void create(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
 

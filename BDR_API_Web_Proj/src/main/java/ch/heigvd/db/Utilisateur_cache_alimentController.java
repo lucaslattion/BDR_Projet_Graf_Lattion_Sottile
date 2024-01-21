@@ -24,6 +24,7 @@ public class Utilisateur_cache_alimentController {
         conn = connection;
         this.authController = authController;
     }
+
     public void getMany(Context ctx) throws SQLException {
         if (authController.validLoggedUser(ctx)) {
             int limit = 0;   // Default 0 means all elements
@@ -98,14 +99,14 @@ public class Utilisateur_cache_alimentController {
         throw new UnauthorizedResponse();
     }
 
-
     public void create(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
 
             Utilisateur_cache_aliment newUtilisateur_cache_aliment = ctx.bodyValidator(Utilisateur_cache_aliment.class)
-                    .check(obj -> obj.email != null, "Missing email")
                     .check(obj -> obj.anom != null, "Missing anom")
                     .get();
+
+            newUtilisateur_cache_aliment.email = ctx.cookie("user");
 
             try (PreparedStatement insertStmt = conn.prepareStatement(
                     "INSERT INTO utilisateur_cache_aliment (email, anom) VALUES (?, ?)")) {
@@ -158,7 +159,7 @@ public class Utilisateur_cache_alimentController {
 
     public void delete(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
-            String email = ctx.pathParam("email");
+            String email = ctx.cookie("user");
 			String anom = ctx.pathParam("anom");
 
             PreparedStatement stmt = conn.prepareStatement("DELETE FROM utilisateur_cache_aliment WHERE email = ? AND anom = ?");
