@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Website Title</title>
+    <title>Intelli'Fridge</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -46,38 +46,12 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             overflow: auto; /* Added this line for scrollability */
         }
-        
-        .filter-bar {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #f4f4f4;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow: auto; /* Added this line for scrollability */
-        }
-        
-        .recipe-singular {
-            display: flex;
-            justify-content: space-between;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px;
-        }
 
         .recipe-singular div {
             flex: 1;
         }
     
-        
-        .filter-bar {
-            display: flex;
-            justify-content: space-between;
-        }
 
-        .filter-element {
-            flex: 1;
-            margin-right: 10px; /* Ajoute une marge entre les éléments */
-        }
         
         .recipe-title {
             display: flex;
@@ -88,14 +62,10 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             align-items: center;
         }
-        
-        #submitButton{
-            text-align: right;
-        }
+
         
         .aliments-ustensils-section{
             width: 200px;
-            background-color: skyblue;
         }
         
 
@@ -121,41 +91,243 @@
 .ingredient, .quantite, .ustensil {
     margin: 0;
 }
-        
+
+        p {
+            line-height: 0.3;
+        }
+
         .instructions p {
-    word-wrap: break-word;
-}
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        a{
+            color: white;
+        }
         
     </style>
+    <script>
+
+        function getQueryParam(paramName) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(paramName);
+        }
+
+        async function fetchRecetteDetails(recipeName) {
+            try {
+                const response = await fetch(`/recette/${encodeURIComponent(recipeName)}`);
+                const recetteDetails = await response.json();
+                return recetteDetails;
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+        async function fetchInformations(recipeName) {
+            try {
+                const response = await fetch(`/recette/getInfos/${encodeURIComponent(recipeName)}`);
+                const informations = await response.json();
+                return informations;
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+        async function fetchUstensilsUsed(recipeName) {
+            try {
+                const response = await fetch(`/recette_utilise_ustensil/${encodeURIComponent(recipeName)}`);
+                const ustensilUsed = await response.json();
+                return ustensilUsed;
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+
+        async function fetchIngredientsUsed(recipeName) {
+            try {
+                const response = await fetch(`/recette_contient_aliment/${encodeURIComponent(recipeName)}`);
+                const ingredientsUsed = await response.json();
+                return ingredientsUsed;
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+        /*
+        async function addRecetteToList(listName, newRecette) {
+            try {
+                const response = await fetch(`/liste_contient_recette/${listName}/${newRecette}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newRecette),
+                });
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+*/
+
+
+
+
+
+        function displayLists(listes) {
+            var select = '<select>';
+            listes.forEach(function(liste) {
+                select += `<option value="${liste.lnom}">${liste.lnom}</option>`;
+            });
+            select += '</select>';
+            document.getElementById('liste-liste').innerHTML = select;
+        }
+
+        function fetchListes() {
+            // Perform a GET request to /aliment
+            fetch('/liste', { credentials: 'include' })
+                .then(response => response.json())
+                .then(data => displayLists(data))
+                .catch(error => console.error('Error:', error));
+        }
+
+        async function displayRecetteDetails() {
+            // Récupérez le nom de la recette à partir des paramètres de requête
+            const recipeName = getQueryParam('recette');
+
+            // Récupérez les détails de la recette depuis l'API
+            const recetteDetails = await fetchRecetteDetails(recipeName);
+            const ustensilsUsed = await fetchUstensilsUsed(recipeName);
+            const recetteInformations = await fetchInformations(recipeName);
+            const alimentsUsed = await fetchIngredientsUsed(recipeName);
+
+
+            // Affichez les détails de la recette dans les divs séparés
+            const nomRecetteContainer = document.getElementById('nom-recette');
+            const typeRecetteContainer = document.getElementById('type-recette');
+            const instructionRecetteContainer = document.getElementById('p-instructions');
+            const ustensilsContainer = document.getElementById('ustensils-container');
+            const alimentsContainer = document.getElementById('aliments-container');
+            const caloriesContainer = document.getElementById('calories-recette');
+            const proteinesContainer = document.getElementById('proteines-recette');
+            const glucidesContainer = document.getElementById('glucides-recette');
+            const lipidesContainer = document.getElementById('lipides-recette');
+            const fibresContainer = document.getElementById('fibres-recette');
+            const sodiumContainer = document.getElementById('sodium-recette');
+            const vitamineAContainer = document.getElementById('vitamineA-recette');
+            const vitamineB1Container = document.getElementById('vitamineB1-recette');
+            const vitamineB2Container = document.getElementById('vitamineB2-recette');
+            const vitamineB3Container = document.getElementById('vitamineB3-recette');
+            const vitamineB6Container = document.getElementById('vitamineB6-recette');
+            const vitamineB12Container = document.getElementById('vitamineB12-recette');
+            const vitamineCContainer = document.getElementById('vitamineC-recette');
+            const vitamineDContainer = document.getElementById('vitamineD-recette');
+            const vitamineEContainer = document.getElementById('vitamineE-recette');
+
+
+            nomRecetteContainer.innerHTML = `<p>${recetteDetails.rnom}</p>`;
+            typeRecetteContainer.innerHTML = `<p>${recetteDetails.type_recette}</p>`;
+            instructionRecetteContainer.innerHTML = `<p>${recetteDetails.instructions}</p>`;
+            caloriesContainer.innerHTML = `<p>Calories: ${recetteInformations.calories} kcal</p>`;
+            proteinesContainer.innerHTML = `<p>Proteines: ${recetteInformations.proteines} g</p>`;
+            glucidesContainer.innerHTML = `<p>Glucides: ${recetteInformations.glucides} g</p>`;
+            lipidesContainer.innerHTML = `<p>Lipides: ${recetteInformations.lipides} g</p>`;
+            fibresContainer.innerHTML = `<p>Fibres: ${recetteInformations.fibres} g</p>`;
+            sodiumContainer.innerHTML = `<p>Sodium: ${recetteInformations.sodium} g</p>`;
+            vitamineAContainer.innerHTML = `<p>Vitamine A: ${recetteInformations.vitamineA} g</p>`;
+            vitamineB1Container.innerHTML = `<p>Vitamine B1: ${recetteInformations.vitamineB1} g</p>`;
+            vitamineB2Container.innerHTML = `<p>Vitamine B2: ${recetteInformations.vitamineB2} g</p>`;
+            vitamineB3Container.innerHTML = `<p>Vitamine B3: ${recetteInformations.vitamineB3} g</p>`;
+            vitamineB6Container.innerHTML = `<p>Vitamine B6: ${recetteInformations.vitamineB6} g</p>`;
+            vitamineB12Container.innerHTML = `<p>Vitamine B12: ${recetteInformations.vitamineB12} g</p>`;
+            vitamineCContainer.innerHTML = `<p>Vitamine C: ${recetteInformations.vitamineC} g</p>`;
+            vitamineDContainer.innerHTML = `<p>Vitamine D: ${recetteInformations.vitamineD} g</p>`;
+            vitamineEContainer.innerHTML = `<p>Vitamine E: ${recetteInformations.vitamineE} g</p>`;
+// Ajoutez d'autres conteneurs pour les autres vitamines
+
+
+
+
+
+
+            // Afficher tous les ustensils dans le conteneur approprié
+            ustensilsContainer.innerHTML = "<h3>Ustensils utilisés</h3>";
+
+            if (ustensilsUsed.length > 0) {
+                const ul = document.createElement('ul');
+                ustensilsUsed.forEach(ustensil => {
+                    const li = document.createElement('li');
+                    li.textContent = ustensil.unom;
+                    ul.appendChild(li);
+                });
+                ustensilsContainer.appendChild(ul);
+            } else {
+                ustensilsContainer.innerHTML += "<p>Aucun ustensil requis.</p>";
+            }
+            // Ajoutez d'autres détails de la recette au besoin
+
+
+
+            alimentsContainer.innerHTML = "<h3>Aliments utilisés</h3>";
+
+            if (alimentsUsed.length > 0) {
+                const ul = document.createElement('ul');
+                alimentsUsed.forEach(aliments => {
+                    const li = document.createElement('li');
+                    li.textContent = `${aliments.anom}  -  ${aliments.quantite} ${aliments.unite_mesure}`;
+                    ul.appendChild(li);
+                });
+                alimentsContainer.appendChild(ul);
+            } else {
+                alimentsContainer.innerHTML += "<p>Aucun aliments requis.</p>";
+            }
+            // Ajoutez d'autres détails de la recette au besoin
+        }
+
+/*
+        function addToList() {
+            const selectedListe = document.getElementById('liste-liste').value;
+            const recipeName = getQueryParam('recette');
+
+            addRecetteToList(selectedListe, recipeName);
+        }
+
+        // Ajoutez un gestionnaire d'événements au bouton
+        document.getElementById('ajouter-bouton').addEventListener('click', addToList);
+
+*/
+        // Appelez la fonction pour afficher les détails de la recette au chargement de la page
+        window.onload = displayRecetteDetails();
+        window.onload = fetchListes();
+
+
+
+
+    </script>
 </head>
 <body>
     <header>
-        <h1>Your Website Title</h1>
+        <h1><a href="listesRecettes.html">Intelli'Fridge</a></h1>
         <div class="header-buttons">
             <a href="./parametres.html">
             <button>Profil</button>
             </a>
-            <a href="./index.html">
+            <a href="./login.html">
             <button>Déconnexion</button>
             </a>
         </div>
     </header>
 
     <div class = recipe-title>
-        <p>Nom recette</p>
-        <p>Type</p>
-    <label for="listeDesListes">Ajouter à liste :</label>
-    <select id="choixListe" name="listeDesListes">
-        <option value="favoris">Favoris</option>
-        <option value="keto">Keto</option>
-        <option value="salade">Salade</option>
-        <option value="salade">Salade</option>
-        <option value="salade">Salade</option>
-    </select>
-        <button>ajouter</button>
+        <div id="nom-recette"></div>
+        <p id="type-recette">Type</p>
+    <label>Ajouter à liste :</label>
+        <select id="liste-liste"></select>
+        <button id="ajouter-bouton">ajouter</button>
     </div>
-    
-    
+
+
 
     
     <div class="recipes-section">
@@ -163,59 +335,36 @@
         
     <div class="container">
     <div class="aliments-ustensils-section">
-        <div class="aliments">
-            <h3>Aliments</h3>
-            <div>
-                <span class="ingredient">Pomme</span>
-                <span class="quantite">10g</span>
-            </div>
-            <div>
-                <span class="ingredient">Banane</span>
-                <span class="quantite">20g</span>
-            </div>
+        <div id="aliments-container">
+            <!-- Les ustensils utilisés seront affichés ici -->
         </div>
-        <div class="ustensils">
-            <h3>Ustensils</h3>
-            <div>
-                <span class="ustensil">Cuillère</span>
-            </div>
-            <div>
-                <span class="ustensil">Fourchette</span>
-            </div>
+        <div id="ustensils-container">
+            <!-- Les ustensils utilisés seront affichés ici -->
         </div>
     </div>
 
     <div class="composants">
         <h3>Composants pour 100 grammes</h3>
-        <div>
-            <span class="ingredient">kcal</span>
-            <span class="quantite">10g</span>
-        </div>
-        <div>
-            <span class="ingredient">Proteines</span>
-            <span class="quantite">20g</span>
-        </div>
-        <div>
-            <span class="ingredient">Glucides</span>
-            <span class="quantite">20g</span>
-        </div>
-        <div>
-            <span class="ingredient">Lipides</span>
-            <span class="quantite">20g</span>
-        </div>
-        <div>
-            <span class="ingredient">fibres</span>
-            <span class="quantite">20g</span>
-        </div>
-        <div>
-            <span class="ingredient">Sodium</span>
-            <span class="quantite">20g</span>
-        </div>
+        <div id="calories-recette"></div>
+        <div id="proteines-recette"></div>
+        <div id="glucides-recette"></div>
+        <div id="lipides-recette"></div>
+        <div id="fibres-recette"></div>
+        <div id="sodium-recette"></div>
+        <div id="vitamineA-recette"></div>
+        <div id="vitamineB1-recette"></div>
+        <div id="vitamineB2-recette"></div>
+        <div id="vitamineB3-recette"></div>
+        <div id="vitamineB6-recette"></div>
+        <div id="vitamineB12-recette"></div>
+        <div id="vitamineC-recette"></div>
+        <div id="vitamineD-recette"></div>
+        <div id="vitamineE-recette"></div>
     </div>
 </div>
-        <div class="instructions">
+        <div class="instructions" >
             <h3>Instructions</h3>
-            <p>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKKKKKKKKKKKKKKKKKKKKKKKAAAAAAAAAAAAAAAAAMMMMMMMMMMM</p>
+            <p id="p-instructions"></p>
         </div>
         
     </div>

@@ -135,8 +135,8 @@
 
 <div class="recipes-section" id="recipesContainer">
     <div class="recipe-singular">
-        <div><a href="recette.html">Nom de la recette</a></div>
-        <div>Nombre de calories</div>
+        <div>Nom de la recette</div>
+        <div></div>
         <div>Type</div>
     </div>
 </div>
@@ -176,16 +176,18 @@
             recipeDiv.classList.add('recipe-singular');
 
             var nomRecetteDiv = document.createElement('div');
-            nomRecetteDiv.innerHTML = `<a href="recette.html">${recette.rnom}</a>`;
+            nomRecetteDiv.innerHTML = `<a href="recette.html?recette=${encodeURIComponent(recette.rnom)}">${recette.rnom}</a>`;
 
-            var caloriesDiv = document.createElement('div');
-            caloriesDiv.textContent = recette.calories;
+            var blankDiv = document.createElement('div');
 
             var typeDiv = document.createElement('div');
-            typeDiv.textContent = recette.type;
+            typeDiv.innerHTML = `${recette.type_recette}`;
+
+
+
 
             recipeDiv.appendChild(nomRecetteDiv);
-            recipeDiv.appendChild(caloriesDiv);
+            recipeDiv.appendChild(blankDiv);
             recipeDiv.appendChild(typeDiv);
 
             recipesContainer.appendChild(recipeDiv);

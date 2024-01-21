@@ -102,34 +102,43 @@ public class Liste_contient_recetteController {
         throw new UnauthorizedResponse();
     }
 
-    public void create(Context ctx) throws SQLException {
-        if(authController.validLoggedUser(ctx)){
 
+    public void create(Context ctx) throws SQLException {
+        // Vérifiez l'authentification de l'utilisateur
+        if (authController.validLoggedUser(ctx)) {
+
+            // Récupérez les détails de la liste_contient_recette à partir du corps de la requête
             Liste_contient_recette newListe_contient_recette = ctx.bodyValidator(Liste_contient_recette.class)
                     .check(obj -> obj.lnom != null, "Missing liste_contient_recette name")
-					.check(obj -> obj.rnom != null, "Missing liste_contient_recette rnom")
+                    .check(obj -> obj.rnom != null, "Missing liste_contient_recette rnom")
                     .check(obj -> obj.email != null, "Missing email")
                     .get();
 
             try (PreparedStatement insertStmt = conn.prepareStatement(
                     "INSERT INTO liste_contient_recette (lnom, rnom, email) VALUES (?, ?, ?)")) {
 
+                // Remplacez les valeurs dans la requête préparée par les valeurs du nouvel objet Liste_contient_recette
                 insertStmt.setString(1, newListe_contient_recette.lnom);
-				insertStmt.setString(2, newListe_contient_recette.rnom);
+                insertStmt.setString(2, newListe_contient_recette.rnom);
                 insertStmt.setString(3, newListe_contient_recette.email);
 
+                // Exécutez la requête
                 insertStmt.executeUpdate();
+
+                // Répondez avec le statut 201 CREATED et l'objet nouvellement créé
                 ctx.status(HttpStatus.CREATED);
                 ctx.json(newListe_contient_recette);
                 return;
             } catch (SQLException e) {
-                if (e.getSQLState().equals("23505")) { // Unique violation
+                if (e.getSQLState().equals("23505")) { // Violation d'unicité
                     throw new ConflictResponse();
                 } else {
                     throw e;
                 }
             }
         }
+
+        // L'utilisateur n'est pas authentifié
         throw new UnauthorizedResponse();
     }
 

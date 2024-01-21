@@ -24,82 +24,6 @@ public class Recette_utilise_ustensilController {
         conn = connection;
         this.authController = authController;
     }
-    public void getMany(Context ctx) throws SQLException {
-
-        if(authController.validLoggedUser(ctx)){
-
-            int limit = 0;   // Default 0 means all elements
-            int offset = 0;  // Default 0 means no skipped elements
-            String rnom = null;
-            String unom = null;
-
-            // Parse JSON from the request body
-            if (ctx.body() != null && !ctx.body().isEmpty()) {
-                JsonObject requestBody = new JsonParser().parse(ctx.body()).getAsJsonObject();
-
-                // Extract parameters from JSON
-                if (requestBody.has("limit")) {
-                    limit = requestBody.get("limit").getAsInt();
-                }
-                if (requestBody.has("offset")) {
-                    offset = requestBody.get("offset").getAsInt();
-                }
-                if (requestBody.has("rnom")) {
-                    rnom = requestBody.get("rnom").getAsString();
-                }
-                if (requestBody.has("unom")) {
-                    unom = requestBody.get("unom").getAsString();
-                }
-            }
-
-            List<Recette_utilise_ustensil> recette_utilise_ustensilList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM recette_utilise_ustensil"); // assuming the table name is 'recette_utilise_ustensil'
-
-            List<String> conditions = new ArrayList<>();
-
-            if (rnom != null) {
-                conditions.add("rnom = ?");
-            }
-            if (unom != null) {
-                conditions.add("unom = ?");
-            }
-
-            if (!conditions.isEmpty()) {
-                queryBuilder.append(" WHERE ").append(String.join(" AND ", conditions));
-            }
-
-            if (limit > 0) {
-                // Adding LIMIT and OFFSET to the query
-                queryBuilder.append(" LIMIT ").append(limit);
-                if (offset > 0) {
-                    queryBuilder.append(" OFFSET ").append(offset);
-                }
-            }
-
-            PreparedStatement stmt = conn.prepareStatement(queryBuilder.toString());
-
-            int index = 1;
-            if (rnom != null) {
-                stmt.setString(index++, rnom);
-            }
-            if (unom != null) {
-                stmt.setString(index, unom);
-            }
-
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Recette_utilise_ustensil recette_utilise_ustensil = new Recette_utilise_ustensil();
-                recette_utilise_ustensil.rnom = rs.getString("rnom");
-                recette_utilise_ustensil.unom = rs.getString("unom");
-                recette_utilise_ustensilList.add(recette_utilise_ustensil);
-            }
-
-            ctx.json(recette_utilise_ustensilList);
-            return;
-
-        }
-        throw new UnauthorizedResponse();
-    }
 
     public void create(Context ctx) throws SQLException {
         if(authController.validLoggedUser(ctx)){
@@ -176,5 +100,36 @@ public class Recette_utilise_ustensilController {
             return;
         }
         throw new UnauthorizedResponse();
+    }
+
+    public void getMany(Context ctx) throws SQLException {
+        String nomRecette = ctx.pathParam("rnom");
+
+        if (authController.validLoggedUser(ctx)) {
+            // Vous devez remplacer 'conn' par votre connexion à la base de données
+
+            String query = "SELECT * FROM Recette_utilise_Ustensil WHERE rnom = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, nomRecette);
+
+                ResultSet rs = stmt.executeQuery();
+
+                List<Recette_utilise_ustensil> recetteList = new ArrayList<>();
+
+                while (rs.next()) {
+                    Recette_utilise_ustensil recette = new Recette_utilise_ustensil();
+                    recette.rnom = rs.getString("rnom");
+                    recette.unom = rs.getString("unom");
+                    recetteList.add(recette);
+                }
+
+                if (!recetteList.isEmpty()) {
+                    ctx.json(recetteList);
+                    return;
+                }
+            }
+
+            ctx.status(404).json(new Error("Aucune recette trouvée pour le nom spécifié"));
+        }
     }
 }

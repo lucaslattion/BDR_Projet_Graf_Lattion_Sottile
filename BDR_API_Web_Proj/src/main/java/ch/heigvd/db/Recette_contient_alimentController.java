@@ -24,83 +24,37 @@ public class Recette_contient_alimentController {
         conn = connection;
         this.authController = authController;
     }
+
     public void getMany(Context ctx) throws SQLException {
+        String nomRecette = ctx.pathParam("rnom");
 
-        if(authController.validLoggedUser(ctx)){
+        if (authController.validLoggedUser(ctx)) {
+            // Vous devez remplacer 'conn' par votre connexion à la base de données
 
-            int limit = 0;   // Default 0 means all elements
-            int offset = 0;  // Default 0 means no skipped elements
-            String rnom = null;
-            String anom = null;
+            String query = "SELECT * FROM Recette_contient_aliment WHERE rnom = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, nomRecette);
 
-            // Parse JSON from the request body
-            if (ctx.body() != null && !ctx.body().isEmpty()) {
-                JsonObject requestBody = new JsonParser().parse(ctx.body()).getAsJsonObject();
+                ResultSet rs = stmt.executeQuery();
 
-                // Extract parameters from JSON
-                if (requestBody.has("limit")) {
-                    limit = requestBody.get("limit").getAsInt();
+                List<Recette_contient_aliment> alimentList = new ArrayList<>();
+
+                while (rs.next()) {
+                    Recette_contient_aliment recette = new Recette_contient_aliment();
+                    recette.rnom = rs.getString("rnom");
+                    recette.anom = rs.getString("anom");
+                    recette.quantite = rs.getDouble("quantite");
+                    recette.unite_mesure = rs.getString("unite_mesure");
+                    alimentList.add(recette);
                 }
-                if (requestBody.has("offset")) {
-                    offset = requestBody.get("offset").getAsInt();
-                }
-                if (requestBody.has("rnom")) {
-                    rnom = requestBody.get("rnom").getAsString();
-                }
-                if (requestBody.has("anom")) {
-                    anom = requestBody.get("anom").getAsString();
-                }
-            }
 
-            List<Recette_contient_aliment> recette_contient_alimentList = new ArrayList<>();
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM recette_contient_aliment"); // assuming the table name is 'aliment'
-
-            List<String> conditions = new ArrayList<>();
-
-            if (rnom != null) {
-                conditions.add("rnom = ?");
-            }
-            if (anom != null) {
-                conditions.add("anom = ?");
-            }
-
-            if (!conditions.isEmpty()) {
-                queryBuilder.append(" WHERE ").append(String.join(" AND ", conditions));
-            }
-
-            if (limit > 0) {
-                // Adding LIMIT and OFFSET to the query
-                queryBuilder.append(" LIMIT ").append(limit);
-                if (offset > 0) {
-                    queryBuilder.append(" OFFSET ").append(offset);
+                if (!alimentList.isEmpty()) {
+                    ctx.json(alimentList);
+                    return;
                 }
             }
-
-            PreparedStatement stmt = conn.prepareStatement(queryBuilder.toString());
-
-            int index = 1;
-            if (rnom != null) {
-                stmt.setString(index++, rnom);
-            }
-            if (anom != null) {
-                stmt.setString(index, anom);
-            }
-
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Recette_contient_aliment recette_contient_aliment = new Recette_contient_aliment();
-                recette_contient_aliment.rnom = rs.getString("rnom");
-				recette_contient_aliment.anom = rs.getString("anom");
-                recette_contient_aliment.quantite = rs.getInt("quantite");
-				recette_contient_aliment.unite_mesure = rs.getString("unite_mesure");
-                recette_contient_alimentList.add(recette_contient_aliment);
-            }
-
-            ctx.json(recette_contient_alimentList);
-            return;
-
+            ctx.status(404).json(new Error("Aucune recette trouvée pour le nom spécifié"));
         }
-        throw new UnauthorizedResponse();
     }
 
     public void create(Context ctx) throws SQLException {
