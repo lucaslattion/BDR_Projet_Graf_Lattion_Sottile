@@ -90,7 +90,7 @@ public class Main {
                 // liste_contient_recette routes
                 app.get("/liste_contient_recette", liste_contient_recetteController::getMany);
                 app.post("/liste_contient_recette/limit", liste_contient_recetteController::getMany);
-                app.post("/liste_contient_recette", liste_contient_recetteController::create);
+                app.post("/liste_contient_recette/{lnom}/{rnom}", liste_contient_recetteController::create);
                 app.put("/liste_contient_recette/{lnom}", liste_contient_recetteController::update);
                 app.delete("/liste_contient_recette/{lnom}", liste_contient_recetteController::delete);
 
@@ -107,6 +107,7 @@ public class Main {
                 app.post("/recette_contient_aliment", recette_contient_alimentController::create);
                 app.put("/recette_contient_aliment/{rnom}/{anom}", recette_contient_alimentController::update);
                 app.delete("/recette_contient_aliment/{rnom}/{anom}", recette_contient_alimentController::delete);
+                app.get("/recette_contient_aliment/{rnom}", recette_contient_alimentController::getMany);
 
                 // recette_utilise_ustensil routes
                 app.get("/recette_utilise_ustensil", recette_utilise_ustensilController::getMany);
