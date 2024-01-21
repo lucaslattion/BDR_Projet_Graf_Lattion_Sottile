@@ -266,31 +266,28 @@
             <div class="gestion-aliments">
                 <h3>Aliments disponibles</h3>
                 <select id="aliments-disponibles">
-                    <option value="Pomme">Pomme</option>
-                    <option value="Banane">Banane</option>
                 </select>
-                <button id="ajouter-aliment">Masquer aliment</button>
+                <button id="btn-masquer">Masquer aliment</button>
                 <h3>Aliments masquées</h3>
                 <select id="aliments-caches"></select>
-                <button id="retirer-aliment">Réafficher aliment</button>
+                <button id="btn-afficher">Réafficher aliment</button>
             </div>
         </div>
-    </div>
-
-    <div id="panel-vide2" class="panel">
-        <h2>Panel Vide 2</h2>
     </div>
 </div>
 
 <script>
     window.onload = function() {
         fetchAliments();
+        fetchAlimentsDispo();
         fetchRegimesSuivis();
         fetchFridge();
         fetchUniteMesure();
         fetchUtilisateurCacheAliment();
         document.getElementById('btn-ajouter').addEventListener('click', ajouterAlimentAuFrigo);
         document.getElementById('btn-supprimer').addEventListener('click', supprimerAlimentDuFrigo);
+        document.getElementById('btn-afficher').addEventListener('click', afficherAliment);
+        document.getElementById('btn-masquer').addEventListener('click', masquerAliment);
     };
 
     let regimesSuivis = [];
@@ -309,6 +306,13 @@
         fetch('/aliment', { credentials: 'include' })
             .then(response => response.json())
             .then(data => displayAliments(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function fetchAlimentsDispo() {
+        fetch('/aliment/dispo', { credentials: 'include' })
+            .then(response => response.json())
+            .then(data => displayAlimentsDispo(data))
             .catch(error => console.error('Error:', error));
     }
 
@@ -340,7 +344,6 @@
             .catch(error => console.error('Error:', error));
     }
 
-
     function displayAliments(aliments) {
         var select = '<select>';
         aliments.forEach(function(aliment) {
@@ -348,6 +351,15 @@
         });
         select += '</select>';
         document.getElementById('liste-aliments').innerHTML = select;
+    }
+
+    function displayAlimentsDispo(alimentsDispo) {
+        var select = '<select>';
+        alimentsDispo.forEach(function(alimentDispo) {
+            select += `<option value="${alimentDispo.anom}">${alimentDispo.anom}</option>`;
+        });
+        select += '</select>';
+        document.getElementById('aliments-disponibles').innerHTML = select;
     }
 
     function displayUniteMesure(unitesMesures) {
@@ -359,10 +371,10 @@
         document.getElementById('unite-aliments').innerHTML = select;
     }
 
-    function displayUtilisateurCacheAliment(uitlisateur_cache_aliments) {
+    function displayUtilisateurCacheAliment(utilisateur_cache_aliments) {
         var select = '<select>';
-        uitlisateur_cache_aliments.forEach(function(uitlisateur_cache_aliment) {
-            select += `<option value="${uitlisateur_cache_aliment.anom}">${uitlisateur_cache_aliment.anom}</option>`;
+        utilisateur_cache_aliments.forEach(function(utilisateur_cache_aliment) {
+            select += `<option value="${utilisateur_cache_aliment.anom}">${utilisateur_cache_aliment.anom}</option>`;
         });
         select += '</select>';
         document.getElementById('aliments-caches').innerHTML = select;
@@ -450,7 +462,55 @@
         }
     }
 
+    function afficherAliment() {
+        const alimentSelectionne = document.getElementById('aliments-caches').value;
+        const data = { anom: alimentSelectionne };
 
+        fetch(`/utilisateur_cache_aliment/${alimentSelectionne}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Succès:', data);
+                fetchFridge();
+            })
+            .catch((error) => {
+                console.error('Erreur:', error);
+            });
+
+        fetchAlimentsDispo();
+        fetchUtilisateurCacheAliment();
+    }
+
+    function masquerAliment() {
+        const alimentSelectionne = document.getElementById('aliments-disponibles').value;
+        const data = { anom: alimentSelectionne };
+
+        fetch('/utilisateur_cache_aliment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Succès:', data);
+                fetchFridge();
+            })
+            .catch((error) => {
+                console.error('Erreur:', error);
+            });
+
+        fetchAlimentsDispo();
+        fetchUtilisateurCacheAliment();
+    }
 
 
     function ajouterAlimentAuFrigo() {

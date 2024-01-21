@@ -82,6 +82,7 @@ public class Main {
 
                 // Aliment routes
                 app.get("/aliment", alimentController::getMany);
+                app.get("/aliment/dispo", alimentController::getAvailable);
                 app.post("/aliment/limit", alimentController::getMany);
                 app.post("/aliment", alimentController::create);
                 app.put("/aliment/{anom}", alimentController::update);
@@ -165,7 +166,7 @@ public class Main {
                 app.post("/utilisateur_cache_aliment/limit", utilisateur_cache_alimentController::getMany);
                 app.post("/utilisateur_cache_aliment", utilisateur_cache_alimentController::create);
                 app.put("/utilisateur_cache_aliment/{email}/{anom}", utilisateur_cache_alimentController::update);
-                app.delete("/utilisateur_cache_aliment/{email}/{anom}", utilisateur_cache_alimentController::delete);
+                app.delete("/utilisateur_cache_aliment/{anom}", utilisateur_cache_alimentController::delete);
 
                 // utilisateur_cache_recette routes
                 app.get("/utilisateur_cache_recette", utilisateur_cache_recetteController::getMany);
